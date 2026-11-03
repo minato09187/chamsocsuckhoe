@@ -88,3 +88,4 @@ public class SupabaseClient {
         return key != null && !key.trim().isEmpty();
     }
 }
+

@@ -189,3 +189,4 @@
         android:text="Đóng cửa sổ"
         android:textColor="@color/text_secondary" />
 </LinearLayout>
+

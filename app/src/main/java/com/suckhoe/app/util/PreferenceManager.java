@@ -84,3 +84,4 @@ public class PreferenceManager {
         prefs.edit().putInt(KEY_WATER_REMINDER_INTERVAL_MINS, minutes).apply();
     }
 }
+

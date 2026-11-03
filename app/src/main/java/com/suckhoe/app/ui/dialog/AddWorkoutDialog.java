@@ -101,3 +101,4 @@ public class AddWorkoutDialog extends Dialog {
         });
     }
 }
+

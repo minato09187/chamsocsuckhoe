@@ -78,3 +78,4 @@ public class NutritionAdapter extends RecyclerView.Adapter<NutritionAdapter.View
         }
     }
 }
+

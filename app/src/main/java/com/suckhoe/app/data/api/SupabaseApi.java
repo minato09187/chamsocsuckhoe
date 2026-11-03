@@ -91,3 +91,4 @@ public interface SupabaseApi {
     @DELETE("workout_schedules")
     Call<Void> deleteWorkoutSchedule(@Query("id") String idFilter);
 }
+

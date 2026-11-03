@@ -376,3 +376,4 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_SCHEDULE, "id = ?", new String[]{String.valueOf(id)});
     }
 }
+

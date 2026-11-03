@@ -187,3 +187,4 @@ public class RestTimerDialog extends Dialog {
         }
     }
 }
+

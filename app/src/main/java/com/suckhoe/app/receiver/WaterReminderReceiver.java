@@ -12,3 +12,4 @@ public class WaterReminderReceiver extends BroadcastReceiver {
         NotificationHelper.showWaterNotification(context);
     }
 }
+

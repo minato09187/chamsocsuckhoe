@@ -122,3 +122,4 @@ VALUES
 ('Thứ 6', 'Tập Vai & Toàn thân', 'Vai - Cầu vai', '17:30', false, 'Overhead Press, Lateral Raise'),
 ('Thứ 7', 'Cardio / Chạy bộ ngoài trời', 'Tim mạch', '06:30', false, 'Chạy 5km công viên'),
 ('Chủ Nhật', 'Nghỉ ngơi phục hồi (Rest Day)', 'Phục hồi', '00:00', false, 'Giãn cơ yoga nhẹ nhàng');
+

@@ -83,3 +83,4 @@ public class WeightAdapter extends RecyclerView.Adapter<WeightAdapter.ViewHolder
         }
     }
 }
+

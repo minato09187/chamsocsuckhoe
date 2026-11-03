@@ -21,3 +21,4 @@
         android:icon="@drawable/ic_water"
         android:title="@string/nav_weight_water" />
 </menu>
+

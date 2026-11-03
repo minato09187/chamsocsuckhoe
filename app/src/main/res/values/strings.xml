@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sức Khỏe &amp; Thể Hình</string>
+    <string name="app_name">CSSK</string>
 
     <!-- Navigation tabs -->
     <string name="nav_home">Tổng quan</string>
@@ -89,3 +89,4 @@
     <string name="supabase_sync_error">Lỗi đồng bộ Supabase: Kiểm tra lại mạng hoặc Anon Key</string>
     <string name="supabase_offline_notice">Đang lưu cục bộ. Nhập Anon Key để đồng bộ Cloud Supabase.</string>
 </resources>
+

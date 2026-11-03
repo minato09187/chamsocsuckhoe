@@ -14,3 +14,4 @@ public class HealthApp extends Application {
         NotificationHelper.scheduleWaterReminder(this);
     }
 }
+

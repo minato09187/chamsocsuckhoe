@@ -166,3 +166,4 @@ public class NutritionFragment extends Fragment {
         loadNutrition();
     }
 }
+
