@@ -23,32 +23,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Ghi lại bài tập, mức tạ và năng lượng đốt cháy"
+            android:text="Chọn nhóm cơ, hệ thống tự gợi ý bài tập &amp; tính Calo tiêu hao!"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
-        <!-- Tên bài tập -->
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="@string/exercise_name"
-            app:boxStrokeColor="@color/primary_green">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_exercise_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapWords" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Nhóm cơ -->
+        <!-- 1. Nhóm cơ mục tiêu -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Nhóm cơ:"
+            android:layout_marginTop="16dp"
+            android:text="Nhóm cơ mục tiêu:"
             android:textColor="@color/text_secondary"
             android:textSize="13sp"
             android:textStyle="bold" />
@@ -62,7 +46,57 @@
             android:paddingStart="12dp"
             android:paddingEnd="12dp" />
 
-        <!-- Sets & Reps -->
+        <!-- 2. Tên bài tập (Tự động gợi ý theo nhóm cơ đã chọn) -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Tên bài tập (Chọn hoặc gõ bài tập)"
+            app:boxStrokeColor="@color/primary_green"
+            app:hintTextColor="@color/primary_green"
+            app:startIconDrawable="@drawable/ic_workout"
+            app:startIconTint="@color/primary_green">
+
+            <AutoCompleteTextView
+                android:id="@+id/et_exercise_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:completionThreshold="1"
+                android:dropDownHeight="220dp"
+                android:inputType="textCapWords" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 3. Khung hiển thị Tự động tính Calo tiêu hao -->
+        <LinearLayout
+            android:id="@+id/layout_calc_badge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_chip_green"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tv_workout_calc_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔥 Tự động tính: ~95 kcal tiêu hao"
+                android:textColor="@color/primary_green_dark"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_workout_calc_summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Công thức: MET theo nhóm cơ + Khối lượng tạ x Thời gian"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- 4. Sets & Reps & Tạ (kg) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,11 +153,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
-                    android:text="0" />
+                    android:text="20" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-        <!-- Thời gian & Calo đốt -->
+        <!-- 5. Thời gian tập & Calo tiêu hao (Tự động điền) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -154,15 +188,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
-                android:hint="Calo tiêu hao"
-                app:boxStrokeColor="@color/primary_green">
+                android:hint="Calo (Tự tính)"
+                app:boxStrokeColor="@color/primary_green"
+                app:hintTextColor="@color/primary_green">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_calories_burned"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
-                    android:text="80" />
+                    android:text="95" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -196,4 +231,3 @@
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
-
