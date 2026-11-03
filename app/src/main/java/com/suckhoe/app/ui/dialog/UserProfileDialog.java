@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
@@ -64,6 +66,21 @@ public class UserProfileDialog extends Dialog {
         });
 
         btnClose.setOnClickListener(v -> dismiss());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (getWindow() != null) {
+            DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
+            int screenWidth = metrics.widthPixels;
+            int desiredWidth = (int) (screenWidth * 0.85f);
+            int minWidth = (int) (320 * metrics.density);
+            int maxWidth = (int) (380 * metrics.density);
+            int targetWidth = Math.max(minWidth, Math.min(desiredWidth, maxWidth));
+            int finalWidth = Math.min(screenWidth - (int) (32 * metrics.density), targetWidth);
+            getWindow().setLayout(finalWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
     }
 }
 
