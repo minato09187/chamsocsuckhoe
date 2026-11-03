@@ -41,7 +41,30 @@ public class WeightRepository {
                 @Override
                 public void onResponse(Call<List<WeightRecord>> call, Response<List<WeightRecord>> response) {
                     if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                        mainHandler.post(() -> callback.onSuccess(response.body()));
+                        executor.execute(() -> {
+                            List<WeightRecord> remoteList = response.body();
+                            List<WeightRecord> currentLocal = dbHelper.getAllWeights(userId);
+                            boolean changed = false;
+                            for (WeightRecord remoteItem : remoteList) {
+                                boolean exists = false;
+                                for (WeightRecord localItem : currentLocal) {
+                                    if (localItem.getWeight() != null && localItem.getWeight().equals(remoteItem.getWeight())
+                                            && localItem.getLoggedDate() != null && localItem.getLoggedDate().equals(remoteItem.getLoggedDate())) {
+                                        exists = true;
+                                        break;
+                                    }
+                                }
+                                if (!exists) {
+                                    remoteItem.setUserId(userId);
+                                    dbHelper.insertWeight(remoteItem);
+                                    changed = true;
+                                }
+                            }
+                            if (changed) {
+                                List<WeightRecord> updated = dbHelper.getAllWeights(userId);
+                                mainHandler.post(() -> callback.onSuccess(updated));
+                            }
+                        });
                     }
                 }
 

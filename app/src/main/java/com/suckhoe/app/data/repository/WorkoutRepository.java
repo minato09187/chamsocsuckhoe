@@ -41,7 +41,31 @@ public class WorkoutRepository {
                 @Override
                 public void onResponse(Call<List<WorkoutExercise>> call, Response<List<WorkoutExercise>> response) {
                     if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                        mainHandler.post(() -> callback.onSuccess(response.body()));
+                        executor.execute(() -> {
+                            List<WorkoutExercise> remoteList = response.body();
+                            List<WorkoutExercise> currentLocal = dbHelper.getWorkoutsByDate(userId, date);
+                            boolean changed = false;
+                            for (WorkoutExercise remoteItem : remoteList) {
+                                boolean exists = false;
+                                for (WorkoutExercise localItem : currentLocal) {
+                                    if (localItem.getExerciseName() != null && localItem.getExerciseName().equalsIgnoreCase(remoteItem.getExerciseName())
+                                            && localItem.getSets() != null && localItem.getSets().equals(remoteItem.getSets())) {
+                                        exists = true;
+                                        break;
+                                    }
+                                }
+                                if (!exists) {
+                                    remoteItem.setUserId(userId);
+                                    remoteItem.setLogDate(date);
+                                    dbHelper.insertWorkout(remoteItem);
+                                    changed = true;
+                                }
+                            }
+                            if (changed) {
+                                List<WorkoutExercise> updated = dbHelper.getWorkoutsByDate(userId, date);
+                                mainHandler.post(() -> callback.onSuccess(updated));
+                            }
+                        });
                     }
                 }
 

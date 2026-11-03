@@ -8,6 +8,7 @@ import com.suckhoe.app.data.model.WorkoutExercise;
 import com.suckhoe.app.data.model.WorkoutSchedule;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -89,10 +90,17 @@ public interface SupabaseApi {
     @GET("water_logs?select=*&order=log_date.desc")
     Call<List<WaterLog>> getWaterLogsByUser(@Query("user_id") String userIdFilter);
 
-    @GET("water_logs?select=*")
+    @GET("water_logs?select=*&order=id.desc")
     Call<List<WaterLog>> getWaterLogByDateAndUser(
             @Query("user_id") String userIdFilter,
             @Query("log_date") String logDateFilter
+    );
+
+    @PATCH("water_logs")
+    Call<List<WaterLog>> updateWaterLog(
+            @Query("user_id") String userIdFilter,
+            @Query("log_date") String logDateFilter,
+            @Body Map<String, Object> fields
     );
 
     @POST("water_logs")

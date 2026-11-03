@@ -41,7 +41,30 @@ public class ScheduleRepository {
                 @Override
                 public void onResponse(Call<List<WorkoutSchedule>> call, Response<List<WorkoutSchedule>> response) {
                     if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                        mainHandler.post(() -> callback.onSuccess(response.body()));
+                        executor.execute(() -> {
+                            List<WorkoutSchedule> remoteList = response.body();
+                            List<WorkoutSchedule> currentLocal = dbHelper.getAllSchedules(userId);
+                            boolean changed = false;
+                            for (WorkoutSchedule remoteItem : remoteList) {
+                                boolean exists = false;
+                                for (WorkoutSchedule localItem : currentLocal) {
+                                    if (localItem.getDayOfWeek() != null && localItem.getDayOfWeek().equalsIgnoreCase(remoteItem.getDayOfWeek())
+                                            && localItem.getTitle() != null && localItem.getTitle().equalsIgnoreCase(remoteItem.getTitle())) {
+                                        exists = true;
+                                        break;
+                                    }
+                                }
+                                if (!exists) {
+                                    remoteItem.setUserId(userId);
+                                    dbHelper.insertSchedule(remoteItem);
+                                    changed = true;
+                                }
+                            }
+                            if (changed) {
+                                List<WorkoutSchedule> updated = dbHelper.getAllSchedules(userId);
+                                mainHandler.post(() -> callback.onSuccess(updated));
+                            }
+                        });
                     }
                 }
 

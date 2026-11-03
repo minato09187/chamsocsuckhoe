@@ -193,8 +193,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onSuccess(List<NutritionItem> data) {
                 int consumed = 0;
-                for (NutritionItem item : data) {
-                    consumed += item.getCalories();
+                if (data != null) {
+                    for (NutritionItem item : data) {
+                        consumed += item.getCalories();
+                    }
                 }
                 tvCaloriesConsumed.setText(String.valueOf(consumed));
                 pbCalories.setProgress(consumed);
@@ -241,7 +243,7 @@ public class HomeFragment extends Fragment {
                     WeightRecord latest = data.get(0);
                     tvWeight.setText(String.format(Locale.getDefault(), "%.1f kg", latest.getWeight()));
                     tvBmi.setText(String.format(Locale.getDefault(), "BMI: %.1f (%s)", latest.getBmi(), latest.getBmiCategory()));
-                    if (tvWeightStatus != null && getContext() != null) {
+                    if (tvWeightStatus != null) {
                         if (latest.getBmi() >= 18.5 && latest.getBmi() < 23.0) {
                             tvWeightStatus.setText("Thể trạng tốt");
                             tvWeightStatus.setTextColor(androidx.core.content.ContextCompat.getColor(getContext(), R.color.status_good));
@@ -249,13 +251,6 @@ public class HomeFragment extends Fragment {
                             tvWeightStatus.setText("Cần theo dõi");
                             tvWeightStatus.setTextColor(androidx.core.content.ContextCompat.getColor(getContext(), R.color.status_warning));
                         }
-                    }
-                } else {
-                    tvWeight.setText("-- kg");
-                    tvBmi.setText("Chưa có số liệu");
-                    if (tvWeightStatus != null && getContext() != null) {
-                        tvWeightStatus.setText("Cần cập nhật");
-                        tvWeightStatus.setTextColor(androidx.core.content.ContextCompat.getColor(getContext(), R.color.text_secondary));
                     }
                 }
             }

@@ -8,7 +8,9 @@ import com.suckhoe.app.data.api.SupabaseClient;
 import com.suckhoe.app.data.local.AppDatabaseHelper;
 import com.suckhoe.app.data.model.WaterLog;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -34,14 +36,34 @@ public class WaterRepository {
 
     public void getWaterLog(long userId, String date, DataCallback<WaterLog> callback) {
         executor.execute(() -> {
-            WaterLog log = dbHelper.getWaterLog(userId, date);
-            mainHandler.post(() -> callback.onSuccess(log));
+            // 1. Lấy dữ liệu từ SQLite máy trước
+            WaterLog local = dbHelper.getWaterLog(userId, date);
+            mainHandler.post(() -> callback.onSuccess(local));
 
+            // 2. Lấy dữ liệu từ Supabase Cloud để đối chiếu
             SupabaseClient.getApi(context).getWaterLogByDateAndUser("eq." + userId, "eq." + date).enqueue(new Callback<List<WaterLog>>() {
                 @Override
                 public void onResponse(Call<List<WaterLog>> call, Response<List<WaterLog>> response) {
                     if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                        mainHandler.post(() -> callback.onSuccess(response.body().get(0)));
+                        WaterLog remote = response.body().get(0);
+                        int localAmount = (local != null) ? local.getAmountMl() : 0;
+                        int remoteAmount = (remote.getAmountMl() != null) ? remote.getAmountMl() : 0;
+                        int target = (local != null) ? local.getTargetMl() : (remote.getTargetMl() != null ? remote.getTargetMl() : 2000);
+
+                        if (localAmount > remoteAmount) {
+                            // Máy local có tiến trình mới hơn (ví dụ vừa thêm nước thành công) -> Đẩy local lên Supabase
+                            syncToSupabase(userId, date, localAmount, target);
+                        } else if (remoteAmount > localAmount) {
+                            // Supabase có tiến trình lớn hơn -> Cập nhật vào SQLite local và cập nhật giao diện
+                            executor.execute(() -> {
+                                dbHelper.setWaterLogAmount(userId, date, remoteAmount, target);
+                                WaterLog updated = dbHelper.getWaterLog(userId, date);
+                                mainHandler.post(() -> callback.onSuccess(updated));
+                            });
+                        }
+                    } else if (local != null) {
+                        // Chưa có bản ghi trên Supabase -> đồng bộ bản ghi local lên
+                        syncToSupabase(userId, date, local.getAmountMl(), local.getTargetMl());
                     }
                 }
 
@@ -58,13 +80,35 @@ public class WaterRepository {
             mainHandler.post(() -> callback.onSuccess(updated));
 
             if (updated != null) {
-                SupabaseClient.getApi(context).insertWaterLog(updated).enqueue(new Callback<List<WaterLog>>() {
-                    @Override
-                    public void onResponse(Call<List<WaterLog>> call, Response<List<WaterLog>> response) {}
-                    @Override
-                    public void onFailure(Call<List<WaterLog>> call, Throwable t) {}
-                });
+                syncToSupabase(userId, date, updated.getAmountMl(), targetMl);
             }
+        });
+    }
+
+    private void syncToSupabase(long userId, String date, int currentAmount, int targetMl) {
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("amount_ml", currentAmount);
+        fields.put("target_ml", targetMl);
+
+        // 1. Thử cập nhật bản ghi đã có trên Supabase
+        SupabaseClient.getApi(context).updateWaterLog("eq." + userId, "eq." + date, fields).enqueue(new Callback<List<WaterLog>>() {
+            @Override
+            public void onResponse(Call<List<WaterLog>> call, Response<List<WaterLog>> response) {
+                if (!response.isSuccessful() || response.body() == null || response.body().isEmpty()) {
+                    // Nếu chưa có trên Supabase -> chèn bản ghi mới (với id = null để Supabase tự sinh)
+                    WaterLog newLog = new WaterLog(null, userId, currentAmount, targetMl, date);
+                    SupabaseClient.getApi(context).insertWaterLog(newLog).enqueue(new Callback<List<WaterLog>>() {
+                        @Override
+                        public void onResponse(Call<List<WaterLog>> call, Response<List<WaterLog>> response) {}
+
+                        @Override
+                        public void onFailure(Call<List<WaterLog>> call, Throwable t) {}
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<WaterLog>> call, Throwable t) {}
         });
     }
 }

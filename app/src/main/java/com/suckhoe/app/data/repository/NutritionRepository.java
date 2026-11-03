@@ -41,7 +41,31 @@ public class NutritionRepository {
                 @Override
                 public void onResponse(Call<List<NutritionItem>> call, Response<List<NutritionItem>> response) {
                     if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                        mainHandler.post(() -> callback.onSuccess(response.body()));
+                        executor.execute(() -> {
+                            List<NutritionItem> remoteList = response.body();
+                            List<NutritionItem> currentLocal = dbHelper.getNutritionByDate(userId, date);
+                            boolean changed = false;
+                            for (NutritionItem remoteItem : remoteList) {
+                                boolean exists = false;
+                                for (NutritionItem localItem : currentLocal) {
+                                    if (localItem.getFoodName() != null && localItem.getFoodName().equalsIgnoreCase(remoteItem.getFoodName())
+                                            && localItem.getCalories() != null && localItem.getCalories().equals(remoteItem.getCalories())) {
+                                        exists = true;
+                                        break;
+                                    }
+                                }
+                                if (!exists) {
+                                    remoteItem.setUserId(userId);
+                                    remoteItem.setLogDate(date);
+                                    dbHelper.insertNutrition(remoteItem);
+                                    changed = true;
+                                }
+                            }
+                            if (changed) {
+                                List<NutritionItem> updated = dbHelper.getNutritionByDate(userId, date);
+                                mainHandler.post(() -> callback.onSuccess(updated));
+                            }
+                        });
                     }
                 }
 

@@ -425,6 +425,22 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void setWaterLogAmount(long userId, String date, int exactAmountMl, int targetMl) {
+        WaterLog current = getWaterLog(userId, date);
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("amount_ml", Math.max(0, exactAmountMl));
+        cv.put("target_ml", targetMl);
+        if (current == null) {
+            cv.put("user_id", userId);
+            cv.put("log_date", date);
+            cv.put("created_at", DateUtils.getCurrentTime());
+            db.insert(TABLE_WATER, null, cv);
+        } else {
+            db.update(TABLE_WATER, cv, "id = ?", new String[]{String.valueOf(current.getId())});
+        }
+    }
+
     // ==========================================
     // 5. LỊCH TẬP CRUD (THEO USER ID)
     // ==========================================
