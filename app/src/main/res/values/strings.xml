@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sức Khỏe &amp; Thể Hình</string>
+
+    <!-- Navigation tabs -->
+    <string name="nav_home">Tổng quan</string>
+    <string name="nav_nutrition">Dinh dưỡng</string>
+    <string name="nav_workout">Tập luyện</string>
+    <string name="nav_schedule">Lịch tập</string>
+    <string name="nav_weight_water">Cân &amp; Nước</string>
+
+    <!-- Common -->
+    <string name="add">Thêm</string>
+    <string name="cancel">Hủy</string>
+    <string name="save">Lưu lại</string>
+    <string name="delete">Xóa</string>
+    <string name="edit">Sửa</string>
+    <string name="sync">Đồng bộ Supabase</string>
+    <string name="settings">Cấu hình</string>
+    <string name="kcal_unit">kcal</string>
+    <string name="gram_unit">g</string>
+    <string name="kg_unit">kg</string>
+    <string name="ml_unit">ml</string>
+    <string name="min_unit">phút</string>
+
+    <!-- Dinh dưỡng -->
+    <string name="nutrition_title">Nhật ký Dinh dưỡng</string>
+    <string name="calories_consumed">Calo nạp vào</string>
+    <string name="calories_goal">Mục tiêu: %1$d kcal</string>
+    <string name="calories_remaining">%1$d kcal còn lại</string>
+    <string name="meal_breakfast">Bữa sáng</string>
+    <string name="meal_lunch">Bữa trưa</string>
+    <string name="meal_dinner">Bữa tối</string>
+    <string name="meal_snack">Ăn vặt</string>
+    <string name="food_name">Tên món ăn</string>
+    <string name="calories">Năng lượng (kcal)</string>
+    <string name="protein">Chất đạm (g)</string>
+    <string name="carbs">Tinh bột (g)</string>
+    <string name="fat">Chất béo (g)</string>
+
+    <!-- Tập luyện -->
+    <string name="workout_title">Theo dõi Tập luyện</string>
+    <string name="exercise_name">Tên bài tập</string>
+    <string name="muscle_group">Nhóm cơ</string>
+    <string name="sets">Số hiệp (Sets)</string>
+    <string name="reps">Lần lặp (Reps)</string>
+    <string name="weight_lifted">Mức tạ (kg)</string>
+    <string name="duration">Thời gian (phút)</string>
+    <string name="calories_burned">Calo tiêu hao</string>
+    <string name="rest_timer_btn">Đếm giờ nghỉ</string>
+
+    <!-- Đếm giờ nghỉ (Rest Timer) -->
+    <string name="rest_timer_title">Đếm thời gian nghỉ</string>
+    <string name="start">Bắt đầu</string>
+    <string name="pause">Tạm dừng</string>
+    <string name="resume">Tiếp tục</string>
+    <string name="reset">Đặt lại</string>
+    <string name="plus_15s">+15s</string>
+    <string name="rest_done">Hết giờ nghỉ! Vào hiệp tiếp theo thôi!</string>
+
+    <!-- Lịch tập -->
+    <string name="schedule_title">Lịch tập luyện tuần</string>
+    <string name="day_of_week">Thứ trong tuần</string>
+    <string name="workout_plan_name">Tên buổi tập</string>
+    <string name="time_of_day">Giờ tập dự kiến</string>
+    <string name="schedule_notes">Ghi chú kế hoạch</string>
+    <string name="completed">Đã hoàn thành</string>
+
+    <!-- Quản lý cân nặng & Nước -->
+    <string name="weight_title">Quản lý Cân nặng</string>
+    <string name="current_weight">Cân nặng hiện tại</string>
+    <string name="weight_kg">Cân nặng (kg)</string>
+    <string name="height_cm">Chiều cao (cm)</string>
+    <string name="bmi_index">Chỉ số BMI</string>
+    <string name="water_title">Nhắc nhở Uống nước</string>
+    <string name="water_target">Mục tiêu hôm nay: %1$d ml</string>
+    <string name="add_water_150">+150 ml (Cốc)</string>
+    <string name="add_water_250">+250 ml (Ly)</string>
+    <string name="add_water_500">+500 ml (Chai)</string>
+    <string name="water_reminder_enabled">Bật nhắc nhở uống nước định kỳ</string>
+    <string name="water_notification_title">Đến giờ uống nước rồi!</string>
+    <string name="water_notification_msg">Hãy uống 1 ly nước tươi mát (250ml) để giữ gìn sức khỏe nhé!</string>
+
+    <!-- Supabase -->
+    <string name="supabase_config_title">Cấu hình CSDL Supabase</string>
+    <string name="supabase_url_label">Supabase URL</string>
+    <string name="supabase_key_label">Supabase Anon Key (Khóa công khai)</string>
+    <string name="supabase_sync_success">Đồng bộ dữ liệu Supabase thành công!</string>
+    <string name="supabase_sync_error">Lỗi đồng bộ Supabase: Kiểm tra lại mạng hoặc Anon Key</string>
+    <string name="supabase_offline_notice">Đang lưu cục bộ. Nhập Anon Key để đồng bộ Cloud Supabase.</string>
+</resources>
