@@ -85,8 +85,8 @@ public class WorkoutFragment extends Fragment {
 
         rvWorkout.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new WorkoutAdapter(item -> {
-            if (repository != null && item.getId() != null) {
-                repository.deleteWorkout(item.getId(), new WorkoutRepository.DataCallback<Boolean>() {
+            if (repository != null && item != null) {
+                repository.deleteWorkout(item, new WorkoutRepository.DataCallback<Boolean>() {
                     @Override
                     public void onSuccess(Boolean data) {
                         Toast.makeText(getContext(), "Đã xóa bài tập!", Toast.LENGTH_SHORT).show();

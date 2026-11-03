@@ -40,7 +40,7 @@ public class WeightRepository {
             SupabaseClient.getApi(context).getWeightLogsByUser("eq." + userId).enqueue(new Callback<List<WeightRecord>>() {
                 @Override
                 public void onResponse(Call<List<WeightRecord>> call, Response<List<WeightRecord>> response) {
-                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    if (response.isSuccessful() && response.body() != null) {
                         executor.execute(() -> {
                             List<WeightRecord> remoteList = response.body();
                             List<WeightRecord> currentLocal = dbHelper.getAllWeights(userId);
@@ -48,9 +48,16 @@ public class WeightRepository {
                             for (WeightRecord remoteItem : remoteList) {
                                 boolean exists = false;
                                 for (WeightRecord localItem : currentLocal) {
+                                    if (localItem.getId() != null && localItem.getId().equals(remoteItem.getId())) {
+                                        exists = true;
+                                        break;
+                                    }
                                     if (Math.abs(localItem.getWeight() - remoteItem.getWeight()) < 0.001
                                             && localItem.getLoggedDate() != null && localItem.getLoggedDate().equals(remoteItem.getLoggedDate())) {
                                         exists = true;
+                                        if (remoteItem.getId() != null && !localItem.getId().equals(remoteItem.getId())) {
+                                            dbHelper.updateWeightId(localItem.getId(), remoteItem.getId());
+                                        }
                                         break;
                                     }
                                 }
@@ -77,14 +84,69 @@ public class WeightRepository {
     public void addWeightRecord(WeightRecord record, DataCallback<Long> callback) {
         executor.execute(() -> {
             long localId = dbHelper.insertWeight(record);
+            record.setId(localId);
             mainHandler.post(() -> callback.onSuccess(localId));
 
-            SupabaseClient.getApi(context).insertWeightLog(record).enqueue(new Callback<List<WeightRecord>>() {
+            // Chèn lên Supabase không kèm ID local để Supabase tự sinh
+            WeightRecord remoteRecord = new WeightRecord(
+                    record.getUserId(),
+                    record.getWeight(),
+                    record.getHeight(),
+                    record.getBmi(),
+                    record.getNote(),
+                    record.getLoggedDate()
+            );
+
+            SupabaseClient.getApi(context).insertWeightLog(remoteRecord).enqueue(new Callback<List<WeightRecord>>() {
                 @Override
-                public void onResponse(Call<List<WeightRecord>> call, Response<List<WeightRecord>> response) {}
+                public void onResponse(Call<List<WeightRecord>> call, Response<List<WeightRecord>> response) {
+                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        WeightRecord created = response.body().get(0);
+                        if (created.getId() != null) {
+                            executor.execute(() -> {
+                                dbHelper.updateWeightId(localId, created.getId());
+                                record.setId(created.getId());
+                            });
+                        }
+                    }
+                }
+
                 @Override
                 public void onFailure(Call<List<WeightRecord>> call, Throwable t) {}
             });
+        });
+    }
+
+    public void deleteWeightRecord(WeightRecord record, DataCallback<Boolean> callback) {
+        if (record == null) return;
+        executor.execute(() -> {
+            if (record.getId() != null) {
+                dbHelper.deleteWeight(record.getId());
+            }
+            mainHandler.post(() -> callback.onSuccess(true));
+
+            // 1. Xóa trên Supabase theo ID
+            if (record.getId() != null) {
+                SupabaseClient.getApi(context).deleteWeightLog("eq." + record.getId()).enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {}
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {}
+                });
+            }
+
+            // 2. Xóa đồng thời theo User ID + Ngày ghi để dứt điểm hoàn toàn
+            if (record.getUserId() != null && record.getLoggedDate() != null) {
+                SupabaseClient.getApi(context).deleteWeightLogByDetails(
+                        "eq." + record.getUserId(),
+                        "eq." + record.getLoggedDate()
+                ).enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {}
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {}
+                });
+            }
         });
     }
 

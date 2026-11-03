@@ -70,8 +70,8 @@ public class NutritionFragment extends Fragment {
 
         rvNutrition.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new NutritionAdapter(item -> {
-            if (repository != null && item.getId() != null) {
-                repository.deleteNutritionItem(item.getId(), new NutritionRepository.DataCallback<Boolean>() {
+            if (repository != null && item != null) {
+                repository.deleteNutritionItem(item, new NutritionRepository.DataCallback<Boolean>() {
                     @Override
                     public void onSuccess(Boolean data) {
                         Toast.makeText(getContext(), "Đã xóa món ăn!", Toast.LENGTH_SHORT).show();

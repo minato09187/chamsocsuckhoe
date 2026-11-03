@@ -91,8 +91,8 @@ public class WeightWaterFragment extends Fragment {
 
         rvWeightHistory.setLayoutManager(new LinearLayoutManager(getContext()));
         weightAdapter = new WeightAdapter(record -> {
-            if (weightRepo != null && record.getId() != null) {
-                weightRepo.deleteWeightRecord(record.getId(), new WeightRepository.DataCallback<Boolean>() {
+            if (weightRepo != null && record != null) {
+                weightRepo.deleteWeightRecord(record, new WeightRepository.DataCallback<Boolean>() {
                     @Override
                     public void onSuccess(Boolean data) {
                         Toast.makeText(getContext(), "Đã xóa bản ghi cân nặng!", Toast.LENGTH_SHORT).show();

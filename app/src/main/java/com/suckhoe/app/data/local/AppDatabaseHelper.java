@@ -233,6 +233,9 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
     public long insertNutrition(NutritionItem item) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
+        if (item.getId() != null) {
+            cv.put("id", item.getId());
+        }
         cv.put("user_id", item.getUserId());
         cv.put("food_name", item.getFoodName());
         cv.put("calories", item.getCalories());
@@ -242,7 +245,15 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
         cv.put("meal_type", item.getMealType());
         cv.put("log_date", item.getLogDate());
         cv.put("created_at", DateUtils.getCurrentTime());
-        return db.insert(TABLE_NUTRITION, null, cv);
+        return db.insertWithOnConflict(TABLE_NUTRITION, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    public void updateNutritionId(long oldId, long newId) {
+        if (oldId == newId) return;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("UPDATE " + TABLE_NUTRITION + " SET id = ? WHERE id = ?", new Object[]{newId, oldId});
+        } catch (Exception ignored) {}
     }
 
     public List<NutritionItem> getNutritionByDate(long userId, String date) {
@@ -280,6 +291,9 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
     public long insertWeight(WeightRecord record) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
+        if (record.getId() != null) {
+            cv.put("id", record.getId());
+        }
         cv.put("user_id", record.getUserId());
         cv.put("weight", record.getWeight());
         cv.put("height", record.getHeight());
@@ -287,7 +301,15 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
         cv.put("note", record.getNote());
         cv.put("logged_date", record.getLoggedDate());
         cv.put("created_at", DateUtils.getCurrentTime());
-        return db.insert(TABLE_WEIGHT, null, cv);
+        return db.insertWithOnConflict(TABLE_WEIGHT, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    public void updateWeightId(long oldId, long newId) {
+        if (oldId == newId) return;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("UPDATE " + TABLE_WEIGHT + " SET id = ? WHERE id = ?", new Object[]{newId, oldId});
+        } catch (Exception ignored) {}
     }
 
     public List<WeightRecord> getAllWeights(long userId) {
@@ -342,6 +364,9 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
     public long insertWorkout(WorkoutExercise exercise) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
+        if (exercise.getId() != null) {
+            cv.put("id", exercise.getId());
+        }
         cv.put("user_id", exercise.getUserId());
         cv.put("exercise_name", exercise.getExerciseName());
         cv.put("muscle_group", exercise.getMuscleGroup());
@@ -352,7 +377,15 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
         cv.put("calories_burned", exercise.getCaloriesBurned());
         cv.put("log_date", exercise.getLogDate());
         cv.put("created_at", DateUtils.getCurrentTime());
-        return db.insert(TABLE_WORKOUT, null, cv);
+        return db.insertWithOnConflict(TABLE_WORKOUT, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    public void updateWorkoutId(long oldId, long newId) {
+        if (oldId == newId) return;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("UPDATE " + TABLE_WORKOUT + " SET id = ? WHERE id = ?", new Object[]{newId, oldId});
+        } catch (Exception ignored) {}
     }
 
     public List<WorkoutExercise> getWorkoutsByDate(long userId, String date) {
@@ -447,6 +480,9 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
     public long insertSchedule(WorkoutSchedule schedule) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
+        if (schedule.getId() != null) {
+            cv.put("id", schedule.getId());
+        }
         cv.put("user_id", schedule.getUserId());
         cv.put("day_of_week", schedule.getDayOfWeek());
         cv.put("title", schedule.getTitle());
@@ -455,7 +491,15 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
         cv.put("is_completed", schedule.isCompleted() ? 1 : 0);
         cv.put("notes", schedule.getNotes());
         cv.put("created_at", DateUtils.getCurrentTime());
-        return db.insert(TABLE_SCHEDULE, null, cv);
+        return db.insertWithOnConflict(TABLE_SCHEDULE, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    public void updateScheduleId(long oldId, long newId) {
+        if (oldId == newId) return;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("UPDATE " + TABLE_SCHEDULE + " SET id = ? WHERE id = ?", new Object[]{newId, oldId});
+        } catch (Exception ignored) {}
     }
 
     public List<WorkoutSchedule> getAllSchedules(long userId) {

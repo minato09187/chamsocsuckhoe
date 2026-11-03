@@ -51,6 +51,13 @@ public interface SupabaseApi {
     @DELETE("nutrition_logs")
     Call<Void> deleteNutritionLog(@Query("id") String idFilter);
 
+    @DELETE("nutrition_logs")
+    Call<Void> deleteNutritionLogByDetails(
+            @Query("user_id") String userIdFilter,
+            @Query("food_name") String foodNameFilter,
+            @Query("log_date") String logDateFilter
+    );
+
 
     // ==========================================
     // 2. CÂN NẶNG (weight_logs)
@@ -63,6 +70,12 @@ public interface SupabaseApi {
 
     @DELETE("weight_logs")
     Call<Void> deleteWeightLog(@Query("id") String idFilter);
+
+    @DELETE("weight_logs")
+    Call<Void> deleteWeightLogByDetails(
+            @Query("user_id") String userIdFilter,
+            @Query("logged_date") String logDateFilter
+    );
 
 
     // ==========================================
@@ -82,6 +95,13 @@ public interface SupabaseApi {
 
     @DELETE("workout_logs")
     Call<Void> deleteWorkoutLog(@Query("id") String idFilter);
+
+    @DELETE("workout_logs")
+    Call<Void> deleteWorkoutLogByDetails(
+            @Query("user_id") String userIdFilter,
+            @Query("exercise_name") String exerciseNameFilter,
+            @Query("log_date") String logDateFilter
+    );
 
 
     // ==========================================
@@ -121,4 +141,11 @@ public interface SupabaseApi {
 
     @DELETE("workout_schedules")
     Call<Void> deleteWorkoutSchedule(@Query("id") String idFilter);
+
+    @DELETE("workout_schedules")
+    Call<Void> deleteWorkoutScheduleByDetails(
+            @Query("user_id") String userIdFilter,
+            @Query("day_of_week") String dayOfWeekFilter,
+            @Query("title") String titleFilter
+    );
 }

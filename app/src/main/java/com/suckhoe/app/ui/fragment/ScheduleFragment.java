@@ -142,8 +142,8 @@ public class ScheduleFragment extends Fragment {
 
             @Override
             public void onScheduleDeleted(WorkoutSchedule deletedSchedule) {
-                if (deletedSchedule.getId() != null) {
-                    repository.deleteSchedule(deletedSchedule.getId(), new ScheduleRepository.DataCallback<Boolean>() {
+                if (deletedSchedule != null) {
+                    repository.deleteSchedule(deletedSchedule, new ScheduleRepository.DataCallback<Boolean>() {
                         @Override
                         public void onSuccess(Boolean data) {
                             Toast.makeText(getContext(), "Đã xóa buổi tập khỏi lịch!", Toast.LENGTH_SHORT).show();

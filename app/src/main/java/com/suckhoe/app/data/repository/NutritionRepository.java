@@ -40,7 +40,7 @@ public class NutritionRepository {
             SupabaseClient.getApi(context).getNutritionLogsByDateAndUser("eq." + userId, "eq." + date).enqueue(new Callback<List<NutritionItem>>() {
                 @Override
                 public void onResponse(Call<List<NutritionItem>> call, Response<List<NutritionItem>> response) {
-                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    if (response.isSuccessful() && response.body() != null) {
                         executor.execute(() -> {
                             List<NutritionItem> remoteList = response.body();
                             List<NutritionItem> currentLocal = dbHelper.getNutritionByDate(userId, date);
@@ -48,9 +48,16 @@ public class NutritionRepository {
                             for (NutritionItem remoteItem : remoteList) {
                                 boolean exists = false;
                                 for (NutritionItem localItem : currentLocal) {
+                                    if (localItem.getId() != null && localItem.getId().equals(remoteItem.getId())) {
+                                        exists = true;
+                                        break;
+                                    }
                                     if (localItem.getFoodName() != null && localItem.getFoodName().equalsIgnoreCase(remoteItem.getFoodName())
                                             && localItem.getCalories() == remoteItem.getCalories()) {
                                         exists = true;
+                                        if (remoteItem.getId() != null && !localItem.getId().equals(remoteItem.getId())) {
+                                            dbHelper.updateNutritionId(localItem.getId(), remoteItem.getId());
+                                        }
                                         break;
                                     }
                                 }
@@ -78,14 +85,72 @@ public class NutritionRepository {
     public void addNutritionItem(NutritionItem item, DataCallback<Long> callback) {
         executor.execute(() -> {
             long localId = dbHelper.insertNutrition(item);
+            item.setId(localId);
             mainHandler.post(() -> callback.onSuccess(localId));
 
-            SupabaseClient.getApi(context).insertNutritionLog(item).enqueue(new Callback<List<NutritionItem>>() {
+            // Chèn lên Supabase không kèm ID local để Supabase tự sinh ID
+            NutritionItem remoteItem = new NutritionItem(
+                    item.getUserId(),
+                    item.getFoodName(),
+                    item.getCalories(),
+                    item.getProtein(),
+                    item.getCarbs(),
+                    item.getFat(),
+                    item.getMealType(),
+                    item.getLogDate()
+            );
+
+            SupabaseClient.getApi(context).insertNutritionLog(remoteItem).enqueue(new Callback<List<NutritionItem>>() {
                 @Override
-                public void onResponse(Call<List<NutritionItem>> call, Response<List<NutritionItem>> response) {}
+                public void onResponse(Call<List<NutritionItem>> call, Response<List<NutritionItem>> response) {
+                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        NutritionItem created = response.body().get(0);
+                        if (created.getId() != null) {
+                            executor.execute(() -> {
+                                dbHelper.updateNutritionId(localId, created.getId());
+                                item.setId(created.getId());
+                            });
+                        }
+                    }
+                }
+
                 @Override
                 public void onFailure(Call<List<NutritionItem>> call, Throwable t) {}
             });
+        });
+    }
+
+    public void deleteNutritionItem(NutritionItem item, DataCallback<Boolean> callback) {
+        if (item == null) return;
+        executor.execute(() -> {
+            if (item.getId() != null) {
+                dbHelper.deleteNutrition(item.getId());
+            }
+            mainHandler.post(() -> callback.onSuccess(true));
+
+            // 1. Xóa trên Supabase theo ID
+            if (item.getId() != null) {
+                SupabaseClient.getApi(context).deleteNutritionLog("eq." + item.getId()).enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {}
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {}
+                });
+            }
+
+            // 2. Xóa đồng thời theo User ID + Tên món + Ngày ghi để đảm bảo xóa dứt điểm trên Supabase
+            if (item.getUserId() != null && item.getFoodName() != null && item.getLogDate() != null) {
+                SupabaseClient.getApi(context).deleteNutritionLogByDetails(
+                        "eq." + item.getUserId(),
+                        "eq." + item.getFoodName(),
+                        "eq." + item.getLogDate()
+                ).enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {}
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {}
+                });
+            }
         });
     }
 

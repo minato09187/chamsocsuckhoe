@@ -142,20 +142,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_sync) {
-            triggerSupabaseSync();
-            return true;
-        } else if (id == R.id.action_user_profile) {
+        if (id == R.id.action_user_profile) {
             new UserProfileDialog(this).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void triggerSupabaseSync() {
-        Toast.makeText(this, "Đang đồng bộ dữ liệu với Supabase Cloud...", Toast.LENGTH_SHORT).show();
-        if (homeFragment != null) homeFragment.loadAllData();
-        Toast.makeText(this, "Đồng bộ Supabase hoàn tất!", Toast.LENGTH_SHORT).show();
     }
 
     private void checkPermissions() {

@@ -40,7 +40,7 @@ public class WorkoutRepository {
             SupabaseClient.getApi(context).getWorkoutLogsByDateAndUser("eq." + userId, "eq." + date).enqueue(new Callback<List<WorkoutExercise>>() {
                 @Override
                 public void onResponse(Call<List<WorkoutExercise>> call, Response<List<WorkoutExercise>> response) {
-                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    if (response.isSuccessful() && response.body() != null) {
                         executor.execute(() -> {
                             List<WorkoutExercise> remoteList = response.body();
                             List<WorkoutExercise> currentLocal = dbHelper.getWorkoutsByDate(userId, date);
@@ -48,9 +48,17 @@ public class WorkoutRepository {
                             for (WorkoutExercise remoteItem : remoteList) {
                                 boolean exists = false;
                                 for (WorkoutExercise localItem : currentLocal) {
-                                    if (localItem.getExerciseName() != null && localItem.getExerciseName().equalsIgnoreCase(remoteItem.getExerciseName())
-                                            && localItem.getSets() == remoteItem.getSets()) {
+                                    if (localItem.getId() != null && localItem.getId().equals(remoteItem.getId())) {
                                         exists = true;
+                                        break;
+                                    }
+                                    if (localItem.getExerciseName() != null && localItem.getExerciseName().equalsIgnoreCase(remoteItem.getExerciseName())
+                                            && localItem.getSets() == remoteItem.getSets()
+                                            && Math.abs(localItem.getWeight() - remoteItem.getWeight()) < 0.001) {
+                                        exists = true;
+                                        if (remoteItem.getId() != null && !localItem.getId().equals(remoteItem.getId())) {
+                                            dbHelper.updateWorkoutId(localItem.getId(), remoteItem.getId());
+                                        }
                                         break;
                                     }
                                 }
@@ -78,14 +86,73 @@ public class WorkoutRepository {
     public void addWorkout(WorkoutExercise exercise, DataCallback<Long> callback) {
         executor.execute(() -> {
             long localId = dbHelper.insertWorkout(exercise);
+            exercise.setId(localId);
             mainHandler.post(() -> callback.onSuccess(localId));
 
-            SupabaseClient.getApi(context).insertWorkoutLog(exercise).enqueue(new Callback<List<WorkoutExercise>>() {
+            // Chèn lên Supabase không gửi kèm ID local để Supabase tự sinh
+            WorkoutExercise remoteExercise = new WorkoutExercise(
+                    exercise.getUserId(),
+                    exercise.getExerciseName(),
+                    exercise.getMuscleGroup(),
+                    exercise.getSets(),
+                    exercise.getReps(),
+                    exercise.getWeight(),
+                    exercise.getDurationMinutes(),
+                    exercise.getCaloriesBurned(),
+                    exercise.getLogDate()
+            );
+
+            SupabaseClient.getApi(context).insertWorkoutLog(remoteExercise).enqueue(new Callback<List<WorkoutExercise>>() {
                 @Override
-                public void onResponse(Call<List<WorkoutExercise>> call, Response<List<WorkoutExercise>> response) {}
+                public void onResponse(Call<List<WorkoutExercise>> call, Response<List<WorkoutExercise>> response) {
+                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        WorkoutExercise created = response.body().get(0);
+                        if (created.getId() != null) {
+                            executor.execute(() -> {
+                                dbHelper.updateWorkoutId(localId, created.getId());
+                                exercise.setId(created.getId());
+                            });
+                        }
+                    }
+                }
+
                 @Override
                 public void onFailure(Call<List<WorkoutExercise>> call, Throwable t) {}
             });
+        });
+    }
+
+    public void deleteWorkout(WorkoutExercise exercise, DataCallback<Boolean> callback) {
+        if (exercise == null) return;
+        executor.execute(() -> {
+            if (exercise.getId() != null) {
+                dbHelper.deleteWorkout(exercise.getId());
+            }
+            mainHandler.post(() -> callback.onSuccess(true));
+
+            // 1. Xóa trên Supabase theo ID
+            if (exercise.getId() != null) {
+                SupabaseClient.getApi(context).deleteWorkoutLog("eq." + exercise.getId()).enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {}
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {}
+                });
+            }
+
+            // 2. Xóa đồng thời theo User ID + Tên bài tập + Ngày ghi để dứt điểm hoàn toàn
+            if (exercise.getUserId() != null && exercise.getExerciseName() != null && exercise.getLogDate() != null) {
+                SupabaseClient.getApi(context).deleteWorkoutLogByDetails(
+                        "eq." + exercise.getUserId(),
+                        "eq." + exercise.getExerciseName(),
+                        "eq." + exercise.getLogDate()
+                ).enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {}
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {}
+                });
+            }
         });
     }
 
