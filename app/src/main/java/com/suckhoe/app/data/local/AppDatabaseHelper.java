@@ -522,6 +522,7 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
             } while (c.moveToNext());
         }
         c.close();
+        com.suckhoe.app.data.repository.ScheduleRepository.sortSchedules(list);
         return list;
     }
 
