@@ -1,95 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_card_rounded"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:fillViewport="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Lập lịch tập luyện"
-        android:textColor="@color/primary_green_dark"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Lên kế hoạch rèn luyện kỷ luật cho từng ngày"
-        android:textColor="@color/text_secondary"
-        android:textSize="13sp" />
-
-    <!-- Chọn thứ trong tuần -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Thứ trong tuần:"
-        android:textColor="@color/text_secondary"
-        android:textSize="13sp"
-        android:textStyle="bold" />
-
-    <Spinner
-        android:id="@+id/spinner_schedule_day"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/bg_chip_green"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp" />
-
-    <!-- Tên buổi tập -->
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="Tên buổi tập (vd: Tập Ngực &amp; Tay sau)"
-        app:boxStrokeColor="@color/primary_green">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_schedule_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textCapSentences" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Nhóm cơ & Giờ tập -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        android:weightSum="2">
+        android:background="@drawable/bg_card_rounded"
+        android:orientation="vertical"
+        android:padding="24dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lập lịch tập luyện"
+            android:textColor="@color/primary_green_dark"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Lên kế hoạch rèn luyện kỷ luật cho từng ngày"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+        <!-- 1. Chọn thứ trong tuần -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Thứ trong tuần:"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/spinner_schedule_day"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_chip_green"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
+
+        <!-- 2. Tên buổi tập: Người dùng tự do đặt tên -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:hint="Nhóm cơ mục tiêu"
-            app:boxStrokeColor="@color/primary_green">
+            android:layout_marginTop="12dp"
+            android:hint="Tên buổi tập (Tự đặt tên theo ý bạn)"
+            app:boxStrokeColor="@color/primary_green"
+            app:hintTextColor="@color/primary_green">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_schedule_muscle"
+                android:id="@+id/et_schedule_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapWords" />
+                android:inputType="textCapSentences" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- 3. Nhóm cơ mục tiêu: Tích chọn thay vì gõ tay -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Nhóm cơ mục tiêu (Tích chọn nhóm cơ):"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Chạm để tích chọn một hoặc nhiều nhóm cơ bạn sẽ tập:"
+            android:textColor="@color/text_hint"
+            android:textSize="11sp" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_schedule_muscles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            app:chipSpacingHorizontal="6dp"
+            app:chipSpacingVertical="4dp"
+            app:singleSelection="false">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_muscle_chest"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Ngực"
+                android:textColor="@color/chip_muscle_text_selector"
+                app:checkedIconTint="@color/white"
+                app:chipBackgroundColor="@color/chip_muscle_bg_selector"
+                app:chipCornerRadius="16dp"
+                app:chipStrokeColor="@color/chip_muscle_stroke_selector"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_muscle_back"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Lưng xô"
+                android:textColor="@color/chip_muscle_text_selector"
+                app:checkedIconTint="@color/white"
+                app:chipBackgroundColor="@color/chip_muscle_bg_selector"
+                app:chipCornerRadius="16dp"
+                app:chipStrokeColor="@color/chip_muscle_stroke_selector"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_muscle_legs"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Chân"
+                android:textColor="@color/chip_muscle_text_selector"
+                app:checkedIconTint="@color/white"
+                app:chipBackgroundColor="@color/chip_muscle_bg_selector"
+                app:chipCornerRadius="16dp"
+                app:chipStrokeColor="@color/chip_muscle_stroke_selector"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_muscle_shoulders"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Vai"
+                android:textColor="@color/chip_muscle_text_selector"
+                app:checkedIconTint="@color/white"
+                app:chipBackgroundColor="@color/chip_muscle_bg_selector"
+                app:chipCornerRadius="16dp"
+                app:chipStrokeColor="@color/chip_muscle_stroke_selector"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_muscle_biceps"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Tay trước"
+                android:textColor="@color/chip_muscle_text_selector"
+                app:checkedIconTint="@color/white"
+                app:chipBackgroundColor="@color/chip_muscle_bg_selector"
+                app:chipCornerRadius="16dp"
+                app:chipStrokeColor="@color/chip_muscle_stroke_selector"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_muscle_triceps"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Tay sau"
+                android:textColor="@color/chip_muscle_text_selector"
+                app:checkedIconTint="@color/white"
+                app:chipBackgroundColor="@color/chip_muscle_bg_selector"
+                app:chipCornerRadius="16dp"
+                app:chipStrokeColor="@color/chip_muscle_stroke_selector"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_muscle_abs"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Bụng"
+                android:textColor="@color/chip_muscle_text_selector"
+                app:checkedIconTint="@color/white"
+                app:chipBackgroundColor="@color/chip_muscle_bg_selector"
+                app:chipCornerRadius="16dp"
+                app:chipStrokeColor="@color/chip_muscle_stroke_selector"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_muscle_cardio"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Cardio"
+                android:textColor="@color/chip_muscle_text_selector"
+                app:checkedIconTint="@color/white"
+                app:chipBackgroundColor="@color/chip_muscle_bg_selector"
+                app:chipCornerRadius="16dp"
+                app:chipStrokeColor="@color/chip_muscle_stroke_selector"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_muscle_fullbody"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Toàn thân"
+                android:textColor="@color/chip_muscle_text_selector"
+                app:checkedIconTint="@color/white"
+                app:chipBackgroundColor="@color/chip_muscle_bg_selector"
+                app:chipCornerRadius="16dp"
+                app:chipStrokeColor="@color/chip_muscle_stroke_selector"
+                app:chipStrokeWidth="1dp" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <!-- 4. Giờ tập -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
+            android:layout_marginTop="12dp"
             android:hint="Giờ tập (HH:mm)"
-            app:boxStrokeColor="@color/primary_green">
+            app:boxStrokeColor="@color/primary_green"
+            app:hintTextColor="@color/primary_green">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_schedule_time"
@@ -98,51 +235,51 @@
                 android:inputType="time"
                 android:text="17:30" />
         </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
 
-    <!-- Ghi chú bài tập -->
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Ghi chú bài tập / mục tiêu"
-        app:boxStrokeColor="@color/primary_green">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_schedule_notes"
+        <!-- 5. Ghi chú bài tập -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textCapSentences" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginTop="10dp"
+            android:hint="Ghi chú bài tập / mục tiêu (tùy chọn)"
+            app:boxStrokeColor="@color/primary_green"
+            app:hintTextColor="@color/primary_green">
 
-    <!-- Buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="end"
-        android:orientation="horizontal">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_schedule_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_cancel_schedule"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/cancel"
-            android:textAllCaps="false"
-            android:textColor="@color/text_secondary" />
+            android:layout_marginTop="20dp"
+            android:gravity="end"
+            android:orientation="horizontal">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_save_schedule"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:backgroundTint="@color/primary_green"
-            android:text="@string/save"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            app:cornerRadius="10dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancel_schedule"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel"
+                android:textAllCaps="false"
+                android:textColor="@color/text_secondary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save_schedule"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="@color/primary_green"
+                android:text="@string/save"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:cornerRadius="10dp" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
-
+</ScrollView>

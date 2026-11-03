@@ -2,6 +2,7 @@ package com.suckhoe.app.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -13,25 +14,35 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.suckhoe.app.R;
 import com.suckhoe.app.data.local.AppDatabaseHelper;
 import com.suckhoe.app.data.model.WeightRecord;
 import com.suckhoe.app.data.model.WorkoutExercise;
+import com.suckhoe.app.data.model.WorkoutSchedule;
 import com.suckhoe.app.util.DateUtils;
 import com.suckhoe.app.util.PreferenceManager;
 import com.suckhoe.app.util.WorkoutCalorieCalculator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class AddWorkoutDialog extends Dialog {
+    private LinearLayout layoutScheduleRec;
+    private TextView tvScheduleRecTitle;
+    private ChipGroup chipGroupRecMuscles;
+
     private AutoCompleteTextView etName;
     private Spinner spinnerMuscle;
     private TextInputEditText etSets;
@@ -47,6 +58,7 @@ public class AddWorkoutDialog extends Dialog {
     private final String[] muscles = new String[]{"Ngực", "Lưng xô", "Chân", "Vai", "Tay trước", "Tay sau", "Bụng", "Cardio", "Toàn thân"};
     private double userWeightKg = 68.0;
     private boolean isCalculating = false;
+    private String preferredMuscleGroup = null;
 
     private final OnWorkoutAddedListener listener;
 
@@ -55,7 +67,12 @@ public class AddWorkoutDialog extends Dialog {
     }
 
     public AddWorkoutDialog(@NonNull Context context, OnWorkoutAddedListener listener) {
+        this(context, null, listener);
+    }
+
+    public AddWorkoutDialog(@NonNull Context context, String preferredMuscleGroup, OnWorkoutAddedListener listener) {
         super(context);
+        this.preferredMuscleGroup = preferredMuscleGroup;
         this.listener = listener;
     }
 
@@ -84,6 +101,10 @@ public class AddWorkoutDialog extends Dialog {
     }
 
     private void initViews() {
+        layoutScheduleRec = findViewById(R.id.layout_schedule_recommendation);
+        tvScheduleRecTitle = findViewById(R.id.tv_schedule_rec_title);
+        chipGroupRecMuscles = findViewById(R.id.chip_group_rec_muscles);
+
         spinnerMuscle = findViewById(R.id.spinner_muscle_group);
         etName = findViewById(R.id.et_exercise_name);
         etSets = findViewById(R.id.et_sets);
@@ -96,30 +117,46 @@ public class AddWorkoutDialog extends Dialog {
         btnCancel = findViewById(R.id.btn_cancel_workout);
         btnSave = findViewById(R.id.btn_save_workout);
 
-        // 1. Gán danh sách nhóm cơ vào Spinner
+        // 1. Gán danh sách nhóm cơ vào Spinner (người dùng tự do chọn bất cứ nhóm cơ nào - không bắt buộc)
         ArrayAdapter<String> muscleAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, muscles);
         spinnerMuscle.setAdapter(muscleAdapter);
 
-        // 2. Lắng nghe chọn nhóm cơ -> Thay đổi danh sách gợi ý bài tập phù hợp nhóm cơ đó
+        // 2. Lắng nghe chọn nhóm cơ trên Spinner
         spinnerMuscle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedMuscle = muscles[position];
                 updateExerciseSuggestions(selectedMuscle);
                 recalculateCalories();
+
+                // Đồng bộ trạng thái check của Chip đề cử nếu có
+                if (chipGroupRecMuscles != null) {
+                    for (int i = 0; i < chipGroupRecMuscles.getChildCount(); i++) {
+                        View child = chipGroupRecMuscles.getChildAt(i);
+                        if (child instanceof Chip) {
+                            Chip chip = (Chip) child;
+                            Object tag = chip.getTag();
+                            if (tag instanceof String && ((String) tag).equalsIgnoreCase(selectedMuscle)) {
+                                chip.setChecked(true);
+                            } else {
+                                chip.setChecked(false);
+                            }
+                        }
+                    }
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // Khởi tạo danh sách bài tập cho nhóm cơ đầu tiên
-        updateExerciseSuggestions(muscles[0]);
+        // 3. Khởi tạo đề cử theo lịch tập cố định hôm nay
+        setupScheduleRecommendations();
 
-        // 3. Khi người dùng bấm chọn một bài tập trong dropdown gợi ý
+        // 4. Khi người dùng bấm chọn một bài tập trong dropdown gợi ý
         etName.setOnItemClickListener((parent, view, position, id) -> recalculateCalories());
 
-        // 4. Lắng nghe thay đổi các thông số: Số hiệp, Số lần, Mức tạ, Thời gian -> Tự động tính Calo tiêu hao
+        // 5. Lắng nghe thay đổi các thông số: Số hiệp, Số lần, Mức tạ, Thời gian -> Tự động tính Calo tiêu hao
         TextWatcher autoCalculateWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -144,7 +181,7 @@ public class AddWorkoutDialog extends Dialog {
 
         btnCancel.setOnClickListener(v -> dismiss());
 
-        // 5. Nút Lưu lại: Calo tiêu hao đã tự động tính sẵn
+        // 6. Nút Lưu lại: Calo tiêu hao đã tự động tính sẵn
         btnSave.setOnClickListener(v -> {
             String name = etName.getText() != null ? etName.getText().toString().trim() : "";
             if (name.isEmpty()) {
@@ -192,6 +229,123 @@ public class AddWorkoutDialog extends Dialog {
             }
             dismiss();
         });
+    }
+
+    /**
+     * Dựa vào lịch tập cố định hôm nay của người dùng để đề cử nhóm cơ phù hợp
+     */
+    private void setupScheduleRecommendations() {
+        try {
+            long userId = new PreferenceManager(getContext()).getCurrentUserId();
+            String todayDay = DateUtils.getDayOfWeekName(); // "Thứ 2", "Thứ 3", ...
+            List<WorkoutSchedule> allSchedules = AppDatabaseHelper.getInstance(getContext()).getAllSchedules(userId);
+
+            WorkoutSchedule todaySchedule = null;
+            if (allSchedules != null) {
+                for (WorkoutSchedule s : allSchedules) {
+                    if (s.getDayOfWeek() != null && s.getDayOfWeek().equalsIgnoreCase(todayDay)) {
+                        todaySchedule = s;
+                        break;
+                    }
+                }
+            }
+
+            String initialSelectionMuscle = null;
+            if (preferredMuscleGroup != null && !preferredMuscleGroup.isEmpty()) {
+                initialSelectionMuscle = preferredMuscleGroup;
+            }
+
+            if (todaySchedule != null && todaySchedule.getTargetMuscle() != null && !todaySchedule.getTargetMuscle().isEmpty()) {
+                layoutScheduleRec.setVisibility(View.VISIBLE);
+                String sessionTitle = todaySchedule.getTitle() != null && !todaySchedule.getTitle().isEmpty()
+                        ? todaySchedule.getTitle()
+                        : "Lịch hôm nay";
+                tvScheduleRecTitle.setText("💡 Đề cử theo lịch " + todayDay + " (" + sessionTitle + "):");
+
+                chipGroupRecMuscles.removeAllViews();
+
+                // Tách danh sách nhóm cơ được lên lịch (ví dụ: "Ngực, Tay sau")
+                String[] parts = todaySchedule.getTargetMuscle().split("[,;/]");
+                List<String> validRecMuscles = new ArrayList<>();
+
+                for (String part : parts) {
+                    String trimmed = part.trim();
+                    if (trimmed.isEmpty()) continue;
+                    int muscleIdx = findMuscleIndex(trimmed);
+                    if (muscleIdx >= 0) {
+                        String matchedName = muscles[muscleIdx];
+                        if (!validRecMuscles.contains(matchedName)) {
+                            validRecMuscles.add(matchedName);
+                        }
+                    }
+                }
+
+                if (!validRecMuscles.isEmpty()) {
+                    if (initialSelectionMuscle == null) {
+                        initialSelectionMuscle = validRecMuscles.get(0);
+                    }
+
+                    ColorStateList bgSelector = ContextCompat.getColorStateList(getContext(), R.color.chip_muscle_bg_selector);
+                    ColorStateList textSelector = ContextCompat.getColorStateList(getContext(), R.color.chip_muscle_text_selector);
+                    ColorStateList strokeSelector = ContextCompat.getColorStateList(getContext(), R.color.chip_muscle_stroke_selector);
+
+                    for (String recMuscle : validRecMuscles) {
+                        Chip chip = new Chip(getContext());
+                        chip.setText("🔥 " + recMuscle);
+                        chip.setTag(recMuscle);
+                        chip.setCheckable(true);
+                        chip.setClickable(true);
+                        if (bgSelector != null) chip.setChipBackgroundColor(bgSelector);
+                        if (textSelector != null) chip.setTextColor(textSelector);
+                        if (strokeSelector != null) chip.setChipStrokeColor(strokeSelector);
+                        chip.setChipStrokeWidth(2f);
+                        chip.setChipCornerRadius(20f);
+                        chip.setCheckedIconVisible(true);
+                        chip.setCheckedIconTint(ContextCompat.getColorStateList(getContext(), R.color.white));
+
+                        chip.setOnClickListener(v -> {
+                            int targetIdx = findMuscleIndex(recMuscle);
+                            if (targetIdx >= 0) {
+                                spinnerMuscle.setSelection(targetIdx);
+                            }
+                        });
+
+                        chipGroupRecMuscles.addView(chip);
+                    }
+                }
+            } else {
+                layoutScheduleRec.setVisibility(View.GONE);
+            }
+
+            // Chọn nhóm cơ ban đầu trên Spinner
+            int selectIdx = 0;
+            if (initialSelectionMuscle != null) {
+                int matched = findMuscleIndex(initialSelectionMuscle);
+                if (matched >= 0) selectIdx = matched;
+            }
+            spinnerMuscle.setSelection(selectIdx);
+            updateExerciseSuggestions(muscles[selectIdx]);
+
+        } catch (Exception e) {
+            layoutScheduleRec.setVisibility(View.GONE);
+            spinnerMuscle.setSelection(0);
+            updateExerciseSuggestions(muscles[0]);
+        }
+    }
+
+    /**
+     * Tìm vị trí của nhóm cơ trong danh sách chuẩn
+     */
+    private int findMuscleIndex(String query) {
+        if (query == null) return -1;
+        String q = query.trim().toLowerCase(Locale.getDefault());
+        for (int i = 0; i < muscles.length; i++) {
+            String m = muscles[i].toLowerCase(Locale.getDefault());
+            if (m.equals(q) || m.contains(q) || q.contains(m)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**

@@ -207,3 +207,4 @@ public class WorkoutCalorieCalculator {
         return totalCalories;
     }
 }
+

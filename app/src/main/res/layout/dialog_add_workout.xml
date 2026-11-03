@@ -27,6 +27,45 @@
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
+        <!-- Gợi ý đề cử nhóm cơ theo lịch tập cố định hôm nay (không bắt buộc) -->
+        <LinearLayout
+            android:id="@+id/layout_schedule_recommendation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_chip_green"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_schedule_rec_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💡 Đề cử theo lịch hôm nay:"
+                android:textColor="@color/primary_green_dark"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_schedule_rec_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Chạm nhóm cơ đề cử để chọn nhanh (không bắt buộc):"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_rec_muscles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                app:chipSpacingHorizontal="6dp"
+                app:chipSpacingVertical="4dp"
+                app:singleSelection="true" />
+        </LinearLayout>
+
         <!-- 1. Nhóm cơ mục tiêu -->
         <TextView
             android:layout_width="wrap_content"
