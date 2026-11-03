@@ -38,7 +38,6 @@ import java.util.Locale;
 public class HomeFragment extends Fragment {
     private SwipeRefreshLayout swipeRefresh;
     private TextView tvTodayDate;
-    private TextView tvCloudStatus;
     private ImageView btnRestTimerHeader;
 
     // Calorie Views
@@ -85,7 +84,6 @@ public class HomeFragment extends Fragment {
     private void initViews(View view) {
         swipeRefresh = view.findViewById(R.id.swipe_refresh_home);
         tvTodayDate = view.findViewById(R.id.tv_today_date);
-        tvCloudStatus = view.findViewById(R.id.tv_cloud_status);
         btnRestTimerHeader = view.findViewById(R.id.btn_home_rest_timer);
 
         tvCalorieGoal = view.findViewById(R.id.tv_home_calorie_goal);
@@ -167,19 +165,12 @@ public class HomeFragment extends Fragment {
     }
 
     public void loadAllData() {
-        updateCloudStatus();
         loadNutritionData();
         loadWaterData();
         loadWeightData();
         loadWorkoutData();
         if (swipeRefresh.isRefreshing()) {
             swipeRefresh.setRefreshing(false);
-        }
-    }
-
-    private void updateCloudStatus() {
-        if (tvCloudStatus != null) {
-            tvCloudStatus.setText("☁ Supabase Cloud: Đã kết nối tự động");
         }
     }
 

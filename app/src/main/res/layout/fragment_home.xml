@@ -68,21 +68,6 @@
                         android:src="@drawable/ic_timer"
                         app:tint="@color/primary_green_dark" />
                 </LinearLayout>
-
-                <!-- Cloud Sync Status Chip -->
-                <TextView
-                    android:id="@+id/tv_cloud_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:background="#26FFFFFF"
-                    android:paddingStart="10dp"
-                    android:paddingTop="4dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="4dp"
-                    android:text="☁ Supabase Cloud: Sẵn sàng kết nối"
-                    android:textColor="@color/white"
-                    android:textSize="11sp" />
             </LinearLayout>
 
             <!-- Cards Container -->
