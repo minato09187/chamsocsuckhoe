@@ -35,6 +35,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
 
     public void setItems(List<WorkoutSchedule> newItems) {
         this.items = newItems != null ? newItems : new ArrayList<>();
+        com.suckhoe.app.data.repository.ScheduleRepository.sortSchedules(this.items);
         notifyDataSetChanged();
     }
 
@@ -111,7 +112,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
         TextView tvDay, tvTime, tvTitle, tvMuscle, tvNotes;
         CheckBox cbCompleted;
         ImageView btnEdit;
-        MaterialButton btnAdd;
+        ImageView btnAdd;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

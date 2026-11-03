@@ -130,7 +130,7 @@ public interface SupabaseApi {
     // ==========================================
     // 5. LỊCH TẬP (workout_schedules)
     // ==========================================
-    @GET("workout_schedules?select=*&order=day_of_week.asc")
+    @GET("workout_schedules?select=*&order=id.asc")
     Call<List<WorkoutSchedule>> getWorkoutSchedulesByUser(@Query("user_id") String userIdFilter);
 
     @POST("workout_schedules")

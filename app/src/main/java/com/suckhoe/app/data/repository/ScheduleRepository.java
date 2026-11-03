@@ -8,7 +8,9 @@ import com.suckhoe.app.data.api.SupabaseClient;
 import com.suckhoe.app.data.local.AppDatabaseHelper;
 import com.suckhoe.app.data.model.WorkoutSchedule;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -35,6 +37,7 @@ public class ScheduleRepository {
     public void getAllSchedules(long userId, DataCallback<List<WorkoutSchedule>> callback) {
         executor.execute(() -> {
             List<WorkoutSchedule> list = dbHelper.getAllSchedules(userId);
+            sortSchedules(list);
             mainHandler.post(() -> callback.onSuccess(list));
 
             SupabaseClient.getApi(context).getWorkoutSchedulesByUser("eq." + userId).enqueue(new Callback<List<WorkoutSchedule>>() {
@@ -43,34 +46,34 @@ public class ScheduleRepository {
                     if (response.isSuccessful() && response.body() != null) {
                         executor.execute(() -> {
                             List<WorkoutSchedule> remoteList = response.body();
-                            List<WorkoutSchedule> currentLocal = dbHelper.getAllSchedules(userId);
-                            boolean changed = false;
+
+                            // 1. Đồng bộ từng bản ghi từ Supabase vào SQLite bằng ID của Supabase
+                            // Đảm bảo không bỏ sót bất kỳ bản ghi nào (kể cả cùng một thứ có nhiều buổi tập)
                             for (WorkoutSchedule remoteItem : remoteList) {
-                                boolean exists = false;
-                                for (WorkoutSchedule localItem : currentLocal) {
-                                    if (localItem.getId() != null && localItem.getId().equals(remoteItem.getId())) {
-                                        exists = true;
-                                        break;
-                                    }
-                                    if (localItem.getDayOfWeek() != null && localItem.getDayOfWeek().equalsIgnoreCase(remoteItem.getDayOfWeek())
-                                            && localItem.getTitle() != null && localItem.getTitle().equalsIgnoreCase(remoteItem.getTitle())) {
-                                        exists = true;
-                                        if (remoteItem.getId() != null && !localItem.getId().equals(remoteItem.getId())) {
-                                            dbHelper.updateScheduleId(localItem.getId(), remoteItem.getId());
+                                remoteItem.setUserId(userId);
+                                dbHelper.insertSchedule(remoteItem);
+                            }
+
+                            // 2. Dọn dẹp bản ghi local không còn tồn tại trên Supabase
+                            List<WorkoutSchedule> currentLocal = dbHelper.getAllSchedules(userId);
+                            for (WorkoutSchedule localItem : currentLocal) {
+                                if (localItem.getId() != null) {
+                                    boolean inRemote = false;
+                                    for (WorkoutSchedule remoteItem : remoteList) {
+                                        if (localItem.getId().equals(remoteItem.getId())) {
+                                            inRemote = true;
+                                            break;
                                         }
-                                        break;
+                                    }
+                                    if (!inRemote) {
+                                        dbHelper.deleteSchedule(localItem.getId());
                                     }
                                 }
-                                if (!exists) {
-                                    remoteItem.setUserId(userId);
-                                    dbHelper.insertSchedule(remoteItem);
-                                    changed = true;
-                                }
                             }
-                            if (changed) {
-                                List<WorkoutSchedule> updated = dbHelper.getAllSchedules(userId);
-                                mainHandler.post(() -> callback.onSuccess(updated));
-                            }
+
+                            List<WorkoutSchedule> updated = dbHelper.getAllSchedules(userId);
+                            sortSchedules(updated);
+                            mainHandler.post(() -> callback.onSuccess(updated));
                         });
                     }
                 }
@@ -196,5 +199,44 @@ public class ScheduleRepository {
                 public void onFailure(Call<Void> call, Throwable t) {}
             });
         });
+    }
+
+    /**
+     * Sắp xếp lịch tập theo đúng thứ tự ngày trong tuần (Thứ 2 -> Chủ Nhật),
+     * và trong cùng một thứ thì sắp xếp theo thời gian tập (ví dụ: 06:30 trước 17:30)
+     */
+    public static void sortSchedules(List<WorkoutSchedule> list) {
+        if (list == null || list.size() <= 1) return;
+        Collections.sort(list, (a, b) -> {
+            int dayA = getDayOrder(a.getDayOfWeek());
+            int dayB = getDayOrder(b.getDayOfWeek());
+            if (dayA != dayB) {
+                return Integer.compare(dayA, dayB);
+            }
+            // Cùng một thứ: sắp xếp theo thời gian trong ngày (HH:mm)
+            String timeA = a.getTimeOfDay() != null ? a.getTimeOfDay().trim() : "00:00";
+            String timeB = b.getTimeOfDay() != null ? b.getTimeOfDay().trim() : "00:00";
+            int timeCmp = timeA.compareTo(timeB);
+            if (timeCmp != 0) {
+                return timeCmp;
+            }
+            // Nếu cùng giờ tập, sắp xếp theo ID tăng dần
+            long idA = a.getId() != null ? a.getId() : 0L;
+            long idB = b.getId() != null ? b.getId() : 0L;
+            return Long.compare(idA, idB);
+        });
+    }
+
+    public static int getDayOrder(String dayOfWeek) {
+        if (dayOfWeek == null) return 8;
+        String d = dayOfWeek.trim().toLowerCase(Locale.getDefault());
+        if (d.contains("2")) return 1;
+        if (d.contains("3")) return 2;
+        if (d.contains("4")) return 3;
+        if (d.contains("5")) return 4;
+        if (d.contains("6")) return 5;
+        if (d.contains("7")) return 6;
+        if (d.contains("nhật") || d.contains("nhat") || d.contains("cn")) return 7;
+        return 8;
     }
 }

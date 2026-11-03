@@ -78,29 +78,17 @@
                 android:src="@drawable/ic_edit"
                 app:tint="@color/primary_green" />
 
-            <!-- Nút Thêm bài tập / bổ sung buổi tập cho thứ này -->
-            <com.google.android.material.button.MaterialButton
+            <!-- Nút (+) Thêm bài tập cho thứ này -->
+            <ImageView
                 android:id="@+id/btn_add_schedule_exercise"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="6dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:paddingStart="8dp"
-                android:paddingEnd="10dp"
-                android:text="+ Thêm"
-                android:textAllCaps="false"
-                android:textColor="@color/primary_green"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                app:cornerRadius="16dp"
-                app:icon="@drawable/ic_add"
-                app:iconPadding="2dp"
-                app:iconSize="14dp"
-                app:iconTint="@color/primary_green"
-                app:strokeColor="@color/mint_green"
-                app:strokeWidth="1dp" />
+                android:background="@drawable/bg_circle_green"
+                android:contentDescription="Thêm bài tập"
+                android:padding="6dp"
+                android:src="@drawable/ic_add"
+                app:tint="@color/primary_green" />
         </LinearLayout>
 
         <TextView
