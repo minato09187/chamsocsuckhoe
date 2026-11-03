@@ -252,6 +252,7 @@
 
         <!-- Multi-User Quick Switcher on this device -->
         <TextView
+            android:id="@+id/tv_quick_users_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
@@ -267,15 +268,6 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:orientation="horizontal" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:text="* Mật khẩu mặc định tài khoản mẫu: 123456"
-            android:textColor="@color/text_hint"
-            android:textSize="12sp" />
 
     </LinearLayout>
 </ScrollView>

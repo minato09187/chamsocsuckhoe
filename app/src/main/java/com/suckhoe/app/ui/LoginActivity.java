@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     private MaterialButton btnSubmitRegister;
 
     // Quick user switcher
+    private TextView tvQuickUsersLabel;
     private LinearLayout layoutQuickUsers;
 
     private AppDatabaseHelper dbHelper;
@@ -80,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         etRegPassword = findViewById(R.id.et_reg_password);
         btnSubmitRegister = findViewById(R.id.btn_submit_register);
 
+        tvQuickUsersLabel = findViewById(R.id.tv_quick_users_label);
         layoutQuickUsers = findViewById(R.id.layout_quick_users);
     }
 
@@ -202,9 +205,17 @@ public class LoginActivity extends AppCompatActivity {
         layoutQuickUsers.removeAllViews();
         List<User> users = dbHelper.getAllUsers();
         if (users == null || users.isEmpty()) {
+            if (tvQuickUsersLabel != null) {
+                tvQuickUsersLabel.setVisibility(View.GONE);
+            }
             layoutQuickUsers.setVisibility(View.GONE);
             return;
         }
+
+        if (tvQuickUsersLabel != null) {
+            tvQuickUsersLabel.setVisibility(View.VISIBLE);
+        }
+        layoutQuickUsers.setVisibility(View.VISIBLE);
 
         for (User u : users) {
             MaterialButton btnUser = new MaterialButton(this);
@@ -226,8 +237,9 @@ public class LoginActivity extends AppCompatActivity {
 
             btnUser.setOnClickListener(v -> {
                 etLoginUsername.setText(u.getUsername());
-                etLoginPassword.setText("123456");
-                performLogin(u.getUsername(), "123456");
+                String pass = (u.getPassword() != null && !u.getPassword().isEmpty()) ? u.getPassword() : "123456";
+                etLoginPassword.setText(pass);
+                performLogin(u.getUsername(), pass);
             });
 
             layoutQuickUsers.addView(btnUser);

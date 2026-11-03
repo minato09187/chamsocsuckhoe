@@ -218,6 +218,7 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
                 User u = new User();
                 u.setId(c.getLong(c.getColumnIndexOrThrow("id")));
                 u.setUsername(c.getString(c.getColumnIndexOrThrow("username")));
+                u.setPassword(c.getString(c.getColumnIndexOrThrow("password")));
                 u.setFullName(c.getString(c.getColumnIndexOrThrow("full_name")));
                 u.setEmail(c.getString(c.getColumnIndexOrThrow("email")));
                 list.add(u);
@@ -225,6 +226,17 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
         }
         c.close();
         return list;
+    }
+
+    public boolean deleteUser(long userId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NUTRITION, "user_id = ?", new String[]{String.valueOf(userId)});
+        db.delete(TABLE_WEIGHT, "user_id = ?", new String[]{String.valueOf(userId)});
+        db.delete(TABLE_WORKOUT, "user_id = ?", new String[]{String.valueOf(userId)});
+        db.delete(TABLE_WATER, "user_id = ?", new String[]{String.valueOf(userId)});
+        db.delete(TABLE_SCHEDULE, "user_id = ?", new String[]{String.valueOf(userId)});
+        int count = db.delete(TABLE_USERS, "id = ?", new String[]{String.valueOf(userId)});
+        return count > 0;
     }
 
     // ==========================================
