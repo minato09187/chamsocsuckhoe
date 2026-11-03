@@ -49,7 +49,7 @@ public class WorkoutRepository {
                                 boolean exists = false;
                                 for (WorkoutExercise localItem : currentLocal) {
                                     if (localItem.getExerciseName() != null && localItem.getExerciseName().equalsIgnoreCase(remoteItem.getExerciseName())
-                                            && localItem.getSets() != null && localItem.getSets().equals(remoteItem.getSets())) {
+                                            && localItem.getSets() == remoteItem.getSets()) {
                                         exists = true;
                                         break;
                                     }

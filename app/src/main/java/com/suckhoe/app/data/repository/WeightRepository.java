@@ -48,7 +48,7 @@ public class WeightRepository {
                             for (WeightRecord remoteItem : remoteList) {
                                 boolean exists = false;
                                 for (WeightRecord localItem : currentLocal) {
-                                    if (localItem.getWeight() != null && localItem.getWeight().equals(remoteItem.getWeight())
+                                    if (Math.abs(localItem.getWeight() - remoteItem.getWeight()) < 0.001
                                             && localItem.getLoggedDate() != null && localItem.getLoggedDate().equals(remoteItem.getLoggedDate())) {
                                         exists = true;
                                         break;

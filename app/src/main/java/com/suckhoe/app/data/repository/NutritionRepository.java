@@ -49,7 +49,7 @@ public class NutritionRepository {
                                 boolean exists = false;
                                 for (NutritionItem localItem : currentLocal) {
                                     if (localItem.getFoodName() != null && localItem.getFoodName().equalsIgnoreCase(remoteItem.getFoodName())
-                                            && localItem.getCalories() != null && localItem.getCalories().equals(remoteItem.getCalories())) {
+                                            && localItem.getCalories() == remoteItem.getCalories()) {
                                         exists = true;
                                         break;
                                     }
