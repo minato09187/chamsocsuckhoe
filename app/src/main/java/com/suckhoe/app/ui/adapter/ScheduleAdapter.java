@@ -9,8 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.suckhoe.app.R;
 import com.suckhoe.app.data.model.WorkoutSchedule;
 
@@ -23,7 +25,8 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
 
     public interface OnScheduleActionListener {
         void onToggleCompleted(WorkoutSchedule schedule, boolean isCompleted);
-        void onDelete(WorkoutSchedule schedule);
+        void onEdit(WorkoutSchedule schedule);
+        void onAddMore(WorkoutSchedule schedule);
     }
 
     public ScheduleAdapter(OnScheduleActionListener listener) {
@@ -57,7 +60,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
             holder.tvNotes.setVisibility(View.GONE);
         }
 
-        // Checkbox status & strike-through text
+        // Checkbox hoàn thành & gạch ngang tên bài tập
         holder.cbCompleted.setOnCheckedChangeListener(null);
         holder.cbCompleted.setChecked(item.isCompleted());
         if (item.isCompleted()) {
@@ -78,9 +81,22 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
             }
         });
 
-        holder.btnDelete.setOnClickListener(v -> {
+        // 1. Nút Sửa / Chạm vào thẻ để tùy chỉnh bài tập
+        holder.btnEdit.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onDelete(item);
+                listener.onEdit(item);
+            }
+        });
+        holder.cardItem.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onEdit(item);
+            }
+        });
+
+        // 2. Nút Thêm bài tập: bổ sung thêm buổi tập/nhóm cơ cho thứ này
+        holder.btnAdd.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onAddMore(item);
             }
         });
     }
@@ -91,20 +107,23 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        CardView cardItem;
         TextView tvDay, tvTime, tvTitle, tvMuscle, tvNotes;
         CheckBox cbCompleted;
-        ImageView btnDelete;
+        ImageView btnEdit;
+        MaterialButton btnAdd;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            cardItem = itemView.findViewById(R.id.card_schedule_item);
             tvDay = itemView.findViewById(R.id.tv_schedule_day);
             tvTime = itemView.findViewById(R.id.tv_schedule_time);
+            cbCompleted = itemView.findViewById(R.id.cb_schedule_completed);
+            btnEdit = itemView.findViewById(R.id.btn_edit_schedule_item);
+            btnAdd = itemView.findViewById(R.id.btn_add_schedule_exercise);
             tvTitle = itemView.findViewById(R.id.tv_schedule_title);
             tvMuscle = itemView.findViewById(R.id.tv_schedule_muscle);
             tvNotes = itemView.findViewById(R.id.tv_schedule_notes);
-            cbCompleted = itemView.findViewById(R.id.cb_schedule_completed);
-            btnDelete = itemView.findViewById(R.id.btn_delete_schedule);
         }
     }
 }
-

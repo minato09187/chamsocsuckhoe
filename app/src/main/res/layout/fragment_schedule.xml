@@ -66,16 +66,16 @@
         </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!-- FAB Add Schedule -->
+    <!-- FAB Sửa / Tùy chỉnh lịch tập trong tuần -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_schedule"
+        android:id="@+id/fab_edit_schedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="76dp"
-        android:contentDescription="@string/add"
-        android:src="@drawable/ic_add"
+        android:contentDescription="Tùy chỉnh lịch tập trong tuần"
+        android:src="@drawable/ic_edit"
         app:backgroundTint="@color/primary_green"
         app:tint="@color/white" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

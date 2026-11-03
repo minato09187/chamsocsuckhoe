@@ -88,6 +88,22 @@ public class ScheduleRepository {
         });
     }
 
+    public void updateSchedule(WorkoutSchedule schedule, DataCallback<Boolean> callback) {
+        executor.execute(() -> {
+            dbHelper.updateSchedule(schedule);
+            mainHandler.post(() -> callback.onSuccess(true));
+
+            if (schedule.getId() != null) {
+                SupabaseClient.getApi(context).updateWorkoutSchedule("eq." + schedule.getId(), schedule).enqueue(new Callback<List<WorkoutSchedule>>() {
+                    @Override
+                    public void onResponse(Call<List<WorkoutSchedule>> call, Response<List<WorkoutSchedule>> response) {}
+                    @Override
+                    public void onFailure(Call<List<WorkoutSchedule>> call, Throwable t) {}
+                });
+            }
+        });
+    }
+
     public void toggleScheduleCompleted(long id, boolean isCompleted, DataCallback<Boolean> callback) {
         executor.execute(() -> {
             dbHelper.updateScheduleCompleted(id, isCompleted);

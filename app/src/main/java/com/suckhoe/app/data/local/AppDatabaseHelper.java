@@ -488,6 +488,19 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
         db.update(TABLE_SCHEDULE, cv, "id = ?", new String[]{String.valueOf(id)});
     }
 
+    public void updateSchedule(WorkoutSchedule schedule) {
+        if (schedule == null || schedule.getId() == null) return;
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("day_of_week", schedule.getDayOfWeek());
+        cv.put("title", schedule.getTitle());
+        cv.put("target_muscle", schedule.getTargetMuscle());
+        cv.put("time_of_day", schedule.getTimeOfDay());
+        cv.put("is_completed", schedule.isCompleted() ? 1 : 0);
+        cv.put("notes", schedule.getNotes());
+        db.update(TABLE_SCHEDULE, cv, "id = ?", new String[]{String.valueOf(schedule.getId())});
+    }
+
     public void deleteSchedule(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_SCHEDULE, "id = ?", new String[]{String.valueOf(id)});
