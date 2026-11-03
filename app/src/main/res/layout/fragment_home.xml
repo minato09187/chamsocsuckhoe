@@ -171,7 +171,7 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- Row: Cân nặng & Uống nước -->
+                <!-- Row: Cân nặng & Uống nước (Cân bằng đều chiều cao & cấu tạo đối xứng) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -182,10 +182,10 @@
                     android:orientation="horizontal"
                     android:weightSum="2">
 
-                    <!-- Nước -->
+                    <!-- Nước uống -->
                     <androidx.cardview.widget.CardView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/white"
@@ -194,7 +194,7 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:orientation="vertical"
                             android:padding="16dp">
 
@@ -220,6 +220,8 @@
                                 android:id="@+id/tv_home_water_target"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="1"
                                 android:text="Mục tiêu: 2000 ml"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="11sp" />
@@ -234,24 +236,34 @@
                                 android:progress="1250"
                                 android:progressTint="@color/water_blue" />
 
-                            <Button
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1" />
+
+                            <com.google.android.material.button.MaterialButton
                                 android:id="@+id/btn_home_quick_water"
-                                style="@style/Widget.MaterialComponents.Button.TextButton"
+                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                                 android:layout_width="match_parent"
                                 android:layout_height="36dp"
-                                android:layout_marginTop="6dp"
+                                android:layout_marginTop="10dp"
                                 android:insetTop="0dp"
                                 android:insetBottom="0dp"
+                                android:padding="0dp"
                                 android:text="+250 ml"
+                                android:textAllCaps="false"
                                 android:textColor="@color/water_blue"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="8dp"
+                                app:strokeColor="@color/water_blue" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
                     <!-- Cân nặng -->
                     <androidx.cardview.widget.CardView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/white"
@@ -260,7 +272,7 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:orientation="vertical"
                             android:padding="16dp">
 
@@ -286,7 +298,9 @@
                                 android:id="@+id/tv_home_bmi"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="BMI: 23.1 (Lý tưởng)"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="BMI: 23.1 (Bình thường)"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="11sp" />
 
@@ -295,10 +309,17 @@
                                 android:layout_height="6dp"
                                 android:layout_marginTop="8dp" />
 
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1" />
+
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:id="@+id/tv_home_weight_status"
+                                android:layout_width="match_parent"
                                 android:layout_height="36dp"
-                                android:layout_marginTop="6dp"
+                                android:layout_marginTop="10dp"
+                                android:background="@drawable/bg_chip_green"
                                 android:gravity="center"
                                 android:text="Thể trạng tốt"
                                 android:textColor="@color/status_good"

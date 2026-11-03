@@ -77,7 +77,7 @@
         android:orientation="horizontal"
         android:weightSum="4">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_preset_30"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
@@ -86,12 +86,15 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
+            android:padding="0dp"
             android:text="30s"
+            android:textAllCaps="false"
             android:textColor="@color/primary_green"
             android:textSize="12sp"
+            app:cornerRadius="8dp"
             app:strokeColor="@color/primary_green" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_preset_60"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
@@ -100,12 +103,15 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
+            android:padding="0dp"
             android:text="60s"
+            android:textAllCaps="false"
             android:textColor="@color/primary_green"
             android:textSize="12sp"
+            app:cornerRadius="8dp"
             app:strokeColor="@color/primary_green" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_preset_90"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
@@ -114,12 +120,15 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
+            android:padding="0dp"
             android:text="90s"
+            android:textAllCaps="false"
             android:textColor="@color/primary_green"
             android:textSize="12sp"
+            app:cornerRadius="8dp"
             app:strokeColor="@color/primary_green" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_preset_120"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
@@ -127,9 +136,12 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
+            android:padding="0dp"
             android:text="120s"
+            android:textAllCaps="false"
             android:textColor="@color/primary_green"
             android:textSize="12sp"
+            app:cornerRadius="8dp"
             app:strokeColor="@color/primary_green" />
     </LinearLayout>
 
@@ -180,13 +192,15 @@
             android:textSize="13sp" />
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_timer_close"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         android:layout_marginTop="8dp"
         android:text="Đóng cửa sổ"
-        android:textColor="@color/text_secondary" />
+        android:textAllCaps="false"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp" />
 </LinearLayout>
 

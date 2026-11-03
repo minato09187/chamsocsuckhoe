@@ -57,13 +57,16 @@
         android:layout_marginBottom="16dp"
         android:background="@color/divider_color" />
 
-    <!-- Action Buttons -->
+    <!-- Action Buttons: Đủ chữ, không bị cắt dòng, viết hoa chữ cái đầu -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dialog_switch_user"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:text="🔄 Đổi tài khoản / Người dùng khác"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="🔄 Đổi tài khoản"
         android:textAllCaps="false"
         android:textColor="@color/primary_green"
         android:textSize="14sp"
@@ -80,13 +83,16 @@
         android:text="Đăng xuất"
         android:textAllCaps="false"
         android:textColor="@color/status_danger"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_dialog_profile_close"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         android:text="Đóng"
-        android:textColor="@color/text_secondary" />
+        android:textAllCaps="false"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp" />
 </LinearLayout>

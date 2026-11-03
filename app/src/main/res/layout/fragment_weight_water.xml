@@ -151,7 +151,7 @@
                         android:orientation="horizontal"
                         android:weightSum="3">
 
-                        <Button
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_water_add_150"
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="0dp"
@@ -160,12 +160,16 @@
                             android:layout_weight="1"
                             android:insetTop="0dp"
                             android:insetBottom="0dp"
+                            android:padding="0dp"
                             android:text="+150 ml"
+                            android:textAllCaps="false"
                             android:textColor="@color/water_blue"
                             android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="8dp"
                             app:strokeColor="@color/water_blue" />
 
-                        <Button
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_water_add_250"
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="0dp"
@@ -175,12 +179,16 @@
                             android:layout_weight="1"
                             android:insetTop="0dp"
                             android:insetBottom="0dp"
+                            android:padding="0dp"
                             android:text="+250 ml"
+                            android:textAllCaps="false"
                             android:textColor="@color/water_blue"
                             android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="8dp"
                             app:strokeColor="@color/water_blue" />
 
-                        <Button
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_water_add_500"
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="0dp"
@@ -189,9 +197,13 @@
                             android:layout_weight="1"
                             android:insetTop="0dp"
                             android:insetBottom="0dp"
+                            android:padding="0dp"
                             android:text="+500 ml"
+                            android:textAllCaps="false"
                             android:textColor="@color/water_blue"
                             android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="8dp"
                             app:strokeColor="@color/water_blue" />
                     </LinearLayout>
 

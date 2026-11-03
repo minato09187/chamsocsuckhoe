@@ -45,9 +45,9 @@ public class WeightRecord {
     }
 
     public String getBmiCategory() {
-        if (bmi < 18.5) return "Thiếu cân (Gầy)";
-        if (bmi < 23.0) return "Bình thường (Lý tưởng)";
-        if (bmi < 25.0) return "Tiền béo phì (Thừa cân)";
+        if (bmi < 18.5) return "Thiếu cân";
+        if (bmi < 23.0) return "Bình thường";
+        if (bmi < 25.0) return "Thừa cân";
         if (bmi < 30.0) return "Béo phì độ 1";
         return "Béo phì độ 2";
     }
