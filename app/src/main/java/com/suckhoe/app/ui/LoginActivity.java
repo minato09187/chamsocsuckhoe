@@ -27,8 +27,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
-    private Button btnTabLogin;
-    private Button btnTabRegister;
+    private MaterialButton btnTabLogin;
+    private MaterialButton btnTabRegister;
     private LinearLayout layoutLoginForm;
     private LinearLayout layoutRegisterForm;
 
@@ -88,26 +88,34 @@ public class LoginActivity extends AppCompatActivity {
         btnTabRegister.setOnClickListener(v -> showRegisterForm());
     }
 
+    private void setTabActive(MaterialButton btn) {
+        btn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.primary_green)));
+        btn.setStrokeColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.primary_green)));
+        btn.setStrokeWidth((int) (1 * getResources().getDisplayMetrics().density));
+        btn.setTextColor(ContextCompat.getColor(this, R.color.white));
+    }
+
+    private void setTabInactive(MaterialButton btn) {
+        btn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white)));
+        btn.setStrokeColor(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white)));
+        btn.setStrokeWidth((int) (1 * getResources().getDisplayMetrics().density));
+        btn.setTextColor(ContextCompat.getColor(this, R.color.black));
+    }
+
     private void showLoginForm() {
         layoutLoginForm.setVisibility(View.VISIBLE);
         layoutRegisterForm.setVisibility(View.GONE);
 
-        btnTabLogin.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.primary_green)));
-        btnTabLogin.setTextColor(ContextCompat.getColor(this, R.color.white));
-
-        btnTabRegister.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, android.R.color.transparent)));
-        btnTabRegister.setTextColor(ContextCompat.getColor(this, R.color.primary_green_dark));
+        setTabActive(btnTabLogin);
+        setTabInactive(btnTabRegister);
     }
 
     private void showRegisterForm() {
         layoutLoginForm.setVisibility(View.GONE);
         layoutRegisterForm.setVisibility(View.VISIBLE);
 
-        btnTabRegister.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.primary_green)));
-        btnTabRegister.setTextColor(ContextCompat.getColor(this, R.color.white));
-
-        btnTabLogin.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, android.R.color.transparent)));
-        btnTabLogin.setTextColor(ContextCompat.getColor(this, R.color.primary_green_dark));
+        setTabActive(btnTabRegister);
+        setTabInactive(btnTabLogin);
     }
 
     private void setupActions() {

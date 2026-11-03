@@ -63,19 +63,20 @@
 
                 <!-- Toggle Đăng nhập / Đăng ký -->
                 <LinearLayout
+                    android:id="@+id/layout_tab_container"
                     android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:background="@drawable/bg_chip_green"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_tab_toggle_container"
                     android:orientation="horizontal"
+                    android:padding="3dp"
                     android:weightSum="2">
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_tab_login"
                         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:backgroundTint="@color/primary_green"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
                         android:text="Đăng nhập"
@@ -83,11 +84,15 @@
                         android:textColor="@color/white"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        app:cornerRadius="16dp" />
+                        app:backgroundTint="@color/primary_green"
+                        app:cornerRadius="13dp"
+                        app:elevation="0dp"
+                        app:strokeColor="@color/primary_green"
+                        app:strokeWidth="1dp" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_tab_register"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -95,10 +100,14 @@
                         android:insetBottom="0dp"
                         android:text="Đăng ký mới"
                         android:textAllCaps="false"
-                        android:textColor="@color/primary_green_dark"
+                        android:textColor="@color/black"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        app:cornerRadius="16dp" />
+                        app:backgroundTint="@color/white"
+                        app:cornerRadius="13dp"
+                        app:elevation="0dp"
+                        app:strokeColor="@color/white"
+                        app:strokeWidth="1dp" />
                 </LinearLayout>
 
                 <!-- FORM ĐĂNG NHẬP -->
