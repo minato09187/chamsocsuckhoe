@@ -47,8 +47,8 @@ public class WaterRepository {
                     if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                         WaterLog remote = response.body().get(0);
                         int localAmount = (local != null) ? local.getAmountMl() : 0;
-                        int remoteAmount = (remote.getAmountMl() != null) ? remote.getAmountMl() : 0;
-                        int target = (local != null) ? local.getTargetMl() : (remote.getTargetMl() != null ? remote.getTargetMl() : 2000);
+                        int remoteAmount = remote.getAmountMl();
+                        int target = (local != null) ? local.getTargetMl() : remote.getTargetMl();
 
                         if (localAmount > remoteAmount) {
                             // Máy local có tiến trình mới hơn (ví dụ vừa thêm nước thành công) -> Đẩy local lên Supabase

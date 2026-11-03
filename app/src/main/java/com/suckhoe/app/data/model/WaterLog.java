@@ -30,6 +30,14 @@ public class WaterLog {
         this.logDate = logDate;
     }
 
+    public WaterLog(Long id, Long userId, int amountMl, int targetMl, String logDate) {
+        this.id = id;
+        this.userId = userId;
+        this.amountMl = amountMl;
+        this.targetMl = targetMl;
+        this.logDate = logDate;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
