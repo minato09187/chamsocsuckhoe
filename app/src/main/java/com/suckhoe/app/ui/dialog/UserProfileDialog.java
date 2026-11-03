@@ -65,15 +65,15 @@ public class UserProfileDialog extends Dialog {
         btnLogout.setOnClickListener(v -> {
             AlertDialog confirmDialog = new MaterialAlertDialogBuilder(getContext())
                     .setTitle("Đăng xuất tài khoản")
-                    .setMessage("Bạn có muốn giữ tài khoản trên ứng dụng không?\n\n• Có: Giữ lại ở mục 'Chọn nhanh trên máy này' để đăng nhập thuận tiện\n• Không: Xóa tài khoản, không hiển thị trên mục chọn nhanh nữa")
-                    .setPositiveButton("Có (Giữ lại)", (dialog, which) -> {
+                    .setMessage("Bạn có muốn giữ tài khoản trên thiết bị không?\n\n• Có: Giữ lại ở mục 'Chọn nhanh trên máy này' để đăng nhập thuận tiện\n• Không: Xóa tài khoản, không hiển thị trên mục chọn nhanh nữa")
+                    .setPositiveButton("Có", (dialog, which) -> {
                         dismiss();
                         prefManager.logout();
                         Intent intent = new Intent(getContext(), LoginActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         getContext().startActivity(intent);
                     })
-                    .setNegativeButton("Không (Xóa)", (dialog, which) -> {
+                    .setNegativeButton("Không", (dialog, which) -> {
                         long userId = prefManager.getCurrentUserId();
                         if (userId > 0) {
                             AppDatabaseHelper.getInstance(getContext()).deleteUser(userId);
@@ -87,12 +87,26 @@ public class UserProfileDialog extends Dialog {
                     .setNeutralButton("Hủy", null)
                     .show();
 
-            if (confirmDialog.getButton(DialogInterface.BUTTON_NEGATIVE) != null) {
-                confirmDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getContext(), R.color.status_danger));
-            }
-            if (confirmDialog.getButton(DialogInterface.BUTTON_POSITIVE) != null) {
-                confirmDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getContext(), R.color.primary_green));
-            }
+            confirmDialog.setOnShowListener(d -> {
+                Button btnPos = confirmDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                Button btnNeg = confirmDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                Button btnNeu = confirmDialog.getButton(DialogInterface.BUTTON_NEUTRAL);
+
+                if (btnPos != null) {
+                    btnPos.setTextColor(ContextCompat.getColor(getContext(), R.color.primary_green));
+                }
+                if (btnNeg != null) {
+                    btnNeg.setTextColor(ContextCompat.getColor(getContext(), R.color.status_danger));
+                }
+                if (btnNeu != null) {
+                    btnNeu.setTextColor(ContextCompat.getColor(getContext(), R.color.text_secondary));
+                }
+
+                // Cố định cả 3 nút thành 1 hàng ngang
+                if (btnPos != null && btnPos.getParent() instanceof android.widget.LinearLayout) {
+                    ((android.widget.LinearLayout) btnPos.getParent()).setOrientation(android.widget.LinearLayout.HORIZONTAL);
+                }
+            });
         });
 
         btnClose.setOnClickListener(v -> dismiss());
@@ -104,11 +118,11 @@ public class UserProfileDialog extends Dialog {
         if (getWindow() != null) {
             DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
             int screenWidth = metrics.widthPixels;
-            int desiredWidth = (int) (screenWidth * 0.85f);
-            int minWidth = (int) (320 * metrics.density);
-            int maxWidth = (int) (380 * metrics.density);
+            int desiredWidth = (int) (screenWidth * 0.90f);
+            int minWidth = (int) (340 * metrics.density);
+            int maxWidth = (int) (400 * metrics.density);
             int targetWidth = Math.max(minWidth, Math.min(desiredWidth, maxWidth));
-            int finalWidth = Math.min(screenWidth - (int) (32 * metrics.density), targetWidth);
+            int finalWidth = Math.min(screenWidth - (int) (24 * metrics.density), targetWidth);
             getWindow().setLayout(finalWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
