@@ -4,11 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class PreferenceManager {
-    private static final String PREF_NAME = "ChamSocSucKhoe_Prefs";
-
-    // Supabase config
-    public static final String KEY_SUPABASE_URL = "supabase_url";
-    public static final String KEY_SUPABASE_KEY = "supabase_key";
+    private static final String PREF_NAME = "CSSK_Prefs";
 
     // User health profile
     public static final String KEY_USER_HEIGHT = "user_height";
@@ -17,31 +13,10 @@ public class PreferenceManager {
     public static final String KEY_WATER_REMINDER_ENABLED = "water_reminder_enabled";
     public static final String KEY_WATER_REMINDER_INTERVAL_MINS = "water_reminder_interval_mins";
 
-    // Default values
-    public static final String DEFAULT_SUPABASE_URL = "https://rtqmvnhadjetpiategzi.supabase.co";
-    // Placeholder key that user can override or input
-    public static final String DEFAULT_SUPABASE_KEY = "";
-
     private final SharedPreferences prefs;
 
     public PreferenceManager(Context context) {
         this.prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-    }
-
-    public String getSupabaseUrl() {
-        return prefs.getString(KEY_SUPABASE_URL, DEFAULT_SUPABASE_URL);
-    }
-
-    public void setSupabaseUrl(String url) {
-        prefs.edit().putString(KEY_SUPABASE_URL, url).apply();
-    }
-
-    public String getSupabaseKey() {
-        return prefs.getString(KEY_SUPABASE_KEY, DEFAULT_SUPABASE_KEY);
-    }
-
-    public void setSupabaseKey(String key) {
-        prefs.edit().putString(KEY_SUPABASE_KEY, key).apply();
     }
 
     public float getUserHeight() {
@@ -84,4 +59,3 @@ public class PreferenceManager {
         prefs.edit().putInt(KEY_WATER_REMINDER_INTERVAL_MINS, minutes).apply();
     }
 }
-

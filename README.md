@@ -63,24 +63,14 @@
 3. Mở file `supabase_schema.sql` trong thư mục gốc dự án này, copy toàn bộ nội dung và dán vào SQL Editor, sau đó nhấn **Run**.
 4. Toàn bộ 5 bảng (`nutrition_logs`, `weight_logs`, `workout_logs`, `water_logs`, `workout_schedules`) kèm chính sách Row Level Security (RLS) và dữ liệu mẫu sẽ được tạo tự động.
 
-### Bước 2: Lấy Supabase Anon Public Key
-
-1. Trong trang quản lý Supabase, vào mục **Project Settings** (biểu tượng bánh răng) -> **API**.
-2. Tìm dòng **Project API keys** -> copy mã **anon / public key**.
-
-### Bước 3: Mở ứng dụng trong Android Studio
+### Bước 2: Mở và chạy ứng dụng trong Android Studio
 
 1. Mở **Android Studio**.
 2. Chọn **File** -> **Open...** và chọn thư mục `c:\chamsocsuckhoe`.
-3. Đợi Android Studio hoàn tất quá trình Gradle Sync (Sync Project with Gradle Files).
+3. Đợi Android Studio hoàn tất quá trình Gradle Sync.
 4. Chọn máy ảo Android (Emulator) hoặc cắm điện thoại Android thật (bật USB Debugging).
-5. Nhấn nút **Run** (biểu tượng tam giác màu xanh) hoặc tổ hợp phím `Shift + F10` để cài đặt và khởi chạy ứng dụng!
-
-### Bước 4: Nhập Anon Key trong Ứng dụng
-
-1. Trên góc phải thanh công cụ của ứng dụng, nhấn vào biểu tượng **Cài đặt** (hoặc nhấn vào dòng *"Supabase Cloud: Chưa cấu hình Anon Key"* ở trang chủ).
-2. Dán Anon Key đã copy ở Bước 2 vào và bấm **Lưu lại**.
-3. Bấm biểu tượng **Đồng bộ đám mây** trên thanh công cụ để đồng bộ dữ liệu tức thì!
+5. Nhấn nút **Run** (biểu tượng tam giác màu xanh ▶) hoặc tổ hợp phím `Shift + F10` để khởi chạy ứng dụng!
+6. Khóa API Supabase (`sb_publishable_INOKRi1sm3-Q_Fh05oYVzg_mRGYOI_Q`) đã được gắn trực tiếp vào mã nguồn trong `SupabaseClient.java`, ứng dụng sẽ tự động kết nối và đồng bộ ngay lập tức!
 
 ---
 

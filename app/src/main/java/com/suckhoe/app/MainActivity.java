@@ -18,8 +18,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.suckhoe.app.data.api.SupabaseClient;
-import com.suckhoe.app.ui.dialog.SupabaseConfigDialog;
 import com.suckhoe.app.ui.fragment.HomeFragment;
 import com.suckhoe.app.ui.fragment.NutritionFragment;
 import com.suckhoe.app.ui.fragment.ScheduleFragment;
@@ -128,26 +126,11 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_sync) {
             triggerSupabaseSync();
             return true;
-        } else if (id == R.id.action_settings) {
-            new SupabaseConfigDialog(this, () -> {
-                if (homeFragment != null) {
-                    homeFragment.loadAllData();
-                }
-            }).show();
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void triggerSupabaseSync() {
-        if (!SupabaseClient.hasValidApiKey(this)) {
-            Toast.makeText(this, "Chưa cài đặt Anon Key! Vui lòng cấu hình Supabase Key.", Toast.LENGTH_LONG).show();
-            new SupabaseConfigDialog(this, () -> {
-                if (homeFragment != null) homeFragment.loadAllData();
-            }).show();
-            return;
-        }
-
         Toast.makeText(this, "Đang đồng bộ dữ liệu với Supabase Cloud...", Toast.LENGTH_SHORT).show();
         if (homeFragment != null) homeFragment.loadAllData();
         Toast.makeText(this, "Đồng bộ Supabase hoàn tất!", Toast.LENGTH_SHORT).show();
@@ -164,4 +147,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-

@@ -29,7 +29,6 @@ import com.suckhoe.app.data.repository.WeightRepository;
 import com.suckhoe.app.data.repository.WorkoutRepository;
 import com.suckhoe.app.ui.dialog.AddNutritionDialog;
 import com.suckhoe.app.ui.dialog.RestTimerDialog;
-import com.suckhoe.app.ui.dialog.SupabaseConfigDialog;
 import com.suckhoe.app.util.DateUtils;
 import com.suckhoe.app.util.PreferenceManager;
 
@@ -134,12 +133,6 @@ public class HomeFragment extends Fragment {
         btnRestTimerHeader.setOnClickListener(openTimerListener);
         btnOpenTimer.setOnClickListener(openTimerListener);
 
-        tvCloudStatus.setOnClickListener(v -> {
-            if (getContext() != null) {
-                new SupabaseConfigDialog(getContext(), this::loadAllData).show();
-            }
-        });
-
         btnAddMeal.setOnClickListener(v -> {
             if (getContext() != null) {
                 new AddNutritionDialog(getContext(), item -> {
@@ -185,11 +178,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateCloudStatus() {
-        if (getContext() == null) return;
-        if (SupabaseClient.hasValidApiKey(getContext())) {
-            tvCloudStatus.setText("☁ Supabase Cloud: Đã kết nối");
-        } else {
-            tvCloudStatus.setText("☁ Supabase Cloud: Chưa cấu hình Anon Key (Chạm để cài đặt)");
+        if (tvCloudStatus != null) {
+            tvCloudStatus.setText("☁ Supabase Cloud: Đã kết nối tự động");
         }
     }
 

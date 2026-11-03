@@ -82,11 +82,7 @@
     <string name="water_notification_msg">Hãy uống 1 ly nước tươi mát (250ml) để giữ gìn sức khỏe nhé!</string>
 
     <!-- Supabase -->
-    <string name="supabase_config_title">Cấu hình CSDL Supabase</string>
-    <string name="supabase_url_label">Supabase URL</string>
-    <string name="supabase_key_label">Supabase Anon Key (Khóa công khai)</string>
     <string name="supabase_sync_success">Đồng bộ dữ liệu Supabase thành công!</string>
-    <string name="supabase_sync_error">Lỗi đồng bộ Supabase: Kiểm tra lại mạng hoặc Anon Key</string>
-    <string name="supabase_offline_notice">Đang lưu cục bộ. Nhập Anon Key để đồng bộ Cloud Supabase.</string>
+    <string name="supabase_sync_error">Lỗi kết nối Supabase: Kiểm tra lại mạng Internet</string>
 </resources>
 
