@@ -23,33 +23,66 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Ghi lại khẩu phần ăn và hàm lượng macro"
+            android:text="Chỉ cần nhập tên món, AI sẽ tự động ước tính Calo &amp; Macro!"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
-        <!-- Tên món -->
+        <!-- Tên món ăn (AutoCompleteTextView với danh bạ tự động gợi ý) -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="@string/food_name"
+            android:hint="Tên món ăn (vd: Phở bò, Cơm tấm, Ức gà...)"
             app:boxStrokeColor="@color/primary_green"
-            app:hintTextColor="@color/primary_green">
+            app:hintTextColor="@color/primary_green"
+            app:startIconDrawable="@drawable/ic_nutrition"
+            app:startIconTint="@color/primary_green">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <AutoCompleteTextView
                 android:id="@+id/et_food_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:completionThreshold="1"
+                android:dropDownHeight="220dp"
                 android:inputType="textCapSentences" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Loại bữa ăn -->
+        <!-- Khung AI Dự đoán thông minh tự động -->
+        <LinearLayout
+            android:id="@+id/layout_ai_prediction_badge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_chip_green"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tv_ai_prediction_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✨ AI tự động nhận diện dinh dưỡng"
+                android:textColor="@color/primary_green_dark"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_ai_prediction_summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Gõ tên món để xem mức Calo &amp; Macro ước tính"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- Loại bữa ăn (Tự động chọn theo món) -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Bữa ăn:"
+            android:text="Bữa ăn phù hợp:"
             android:textColor="@color/text_secondary"
             android:textSize="13sp"
             android:textStyle="bold" />
@@ -63,7 +96,7 @@
             android:paddingStart="12dp"
             android:paddingEnd="12dp" />
 
-        <!-- Năng lượng Calo -->
+        <!-- Năng lượng Calo (Tự động điền) -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -80,7 +113,7 @@
                 android:inputType="number" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Protein, Carbs, Fat trong 1 hàng -->
+        <!-- Protein, Carbs, Fat trong 1 hàng (Tự động điền) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -168,4 +201,3 @@
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
-
