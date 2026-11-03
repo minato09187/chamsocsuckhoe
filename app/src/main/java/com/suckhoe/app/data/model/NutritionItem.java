@@ -6,6 +6,9 @@ public class NutritionItem {
     @SerializedName("id")
     private Long id;
 
+    @SerializedName("user_id")
+    private Long userId;
+
     @SerializedName("food_name")
     private String foodName;
 
@@ -32,7 +35,8 @@ public class NutritionItem {
 
     public NutritionItem() {}
 
-    public NutritionItem(String foodName, int calories, double protein, double carbs, double fat, String mealType, String logDate) {
+    public NutritionItem(Long userId, String foodName, int calories, double protein, double carbs, double fat, String mealType, String logDate) {
+        this.userId = userId;
         this.foodName = foodName;
         this.calories = calories;
         this.protein = protein;
@@ -44,6 +48,9 @@ public class NutritionItem {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
     public String getFoodName() { return foodName; }
     public void setFoodName(String foodName) { this.foodName = foodName; }
@@ -69,4 +76,3 @@ public class NutritionItem {
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }
-

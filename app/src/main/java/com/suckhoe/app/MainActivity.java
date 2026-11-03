@@ -1,6 +1,7 @@
 package com.suckhoe.app;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,17 +19,21 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.suckhoe.app.ui.LoginActivity;
+import com.suckhoe.app.ui.dialog.UserProfileDialog;
 import com.suckhoe.app.ui.fragment.HomeFragment;
 import com.suckhoe.app.ui.fragment.NutritionFragment;
 import com.suckhoe.app.ui.fragment.ScheduleFragment;
 import com.suckhoe.app.ui.fragment.WeightWaterFragment;
 import com.suckhoe.app.ui.fragment.WorkoutFragment;
+import com.suckhoe.app.util.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
     private static final int REQ_NOTIFICATION_PERMISSION = 2001;
 
     private Toolbar toolbar;
     private BottomNavigationView bottomNav;
+    private PreferenceManager prefManager;
 
     private HomeFragment homeFragment;
     private NutritionFragment nutritionFragment;
@@ -41,6 +46,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        prefManager = new PreferenceManager(this);
+        // Nếu chưa đăng nhập, chuyển sang màn hình Đăng nhập / Chọn tài khoản
+        if (!prefManager.isLoggedIn()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_main);
 
         initViews();
@@ -57,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupToolbar() {
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle("👤 " + prefManager.getCurrentUserFullName());
+        }
     }
 
     private void setupFragments() {
@@ -110,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
             activeFragment = targetFragment;
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(title);
+                getSupportActionBar().setSubtitle("👤 " + prefManager.getCurrentUserFullName());
             }
         }
     }
@@ -125,6 +144,9 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_sync) {
             triggerSupabaseSync();
+            return true;
+        } else if (id == R.id.action_user_profile) {
+            new UserProfileDialog(this).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

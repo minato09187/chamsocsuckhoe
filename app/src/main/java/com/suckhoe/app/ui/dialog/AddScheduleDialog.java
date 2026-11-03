@@ -77,7 +77,8 @@ public class AddScheduleDialog extends Dialog {
             String time = etTime.getText() != null ? etTime.getText().toString().trim() : "17:30";
             String notes = etNotes.getText() != null ? etNotes.getText().toString().trim() : "";
 
-            WorkoutSchedule schedule = new WorkoutSchedule(day, title, muscle, time, false, notes);
+            long userId = new com.suckhoe.app.util.PreferenceManager(getContext()).getCurrentUserId();
+            WorkoutSchedule schedule = new WorkoutSchedule(userId, day, title, muscle, time, false, notes);
 
             if (listener != null) {
                 listener.onScheduleAdded(schedule);

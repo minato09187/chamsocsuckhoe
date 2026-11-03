@@ -6,6 +6,9 @@ public class WeightRecord {
     @SerializedName("id")
     private Long id;
 
+    @SerializedName("user_id")
+    private Long userId;
+
     @SerializedName("weight")
     private double weight; // kg
 
@@ -26,7 +29,8 @@ public class WeightRecord {
 
     public WeightRecord() {}
 
-    public WeightRecord(double weight, double height, double bmi, String note, String loggedDate) {
+    public WeightRecord(Long userId, double weight, double height, double bmi, String note, String loggedDate) {
+        this.userId = userId;
         this.weight = weight;
         this.height = height;
         this.bmi = bmi;
@@ -51,6 +55,9 @@ public class WeightRecord {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+
     public double getWeight() { return weight; }
     public void setWeight(double weight) { this.weight = weight; }
 
@@ -69,4 +76,3 @@ public class WeightRecord {
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }
-

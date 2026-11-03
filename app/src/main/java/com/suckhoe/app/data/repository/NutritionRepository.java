@@ -32,27 +32,22 @@ public class NutritionRepository {
         this.dbHelper = AppDatabaseHelper.getInstance(this.context);
     }
 
-    public void getNutritionByDate(String date, DataCallback<List<NutritionItem>> callback) {
+    public void getNutritionByDate(long userId, String date, DataCallback<List<NutritionItem>> callback) {
         executor.execute(() -> {
-            List<NutritionItem> localList = dbHelper.getNutritionByDate(date);
+            List<NutritionItem> localList = dbHelper.getNutritionByDate(userId, date);
             mainHandler.post(() -> callback.onSuccess(localList));
 
-            // Sync with Supabase if key is provided
-            if (SupabaseClient.hasValidApiKey(context)) {
-                SupabaseClient.getApi(context).getNutritionLogsByDate("eq." + date).enqueue(new Callback<List<NutritionItem>>() {
-                    @Override
-                    public void onResponse(Call<List<NutritionItem>> call, Response<List<NutritionItem>> response) {
-                        if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                            mainHandler.post(() -> callback.onSuccess(response.body()));
-                        }
+            SupabaseClient.getApi(context).getNutritionLogsByDateAndUser("eq." + userId, "eq." + date).enqueue(new Callback<List<NutritionItem>>() {
+                @Override
+                public void onResponse(Call<List<NutritionItem>> call, Response<List<NutritionItem>> response) {
+                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        mainHandler.post(() -> callback.onSuccess(response.body()));
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<List<NutritionItem>> call, Throwable t) {
-                        // Keep using local data
-                    }
-                });
-            }
+                @Override
+                public void onFailure(Call<List<NutritionItem>> call, Throwable t) {}
+            });
         });
     }
 
@@ -61,14 +56,12 @@ public class NutritionRepository {
             long localId = dbHelper.insertNutrition(item);
             mainHandler.post(() -> callback.onSuccess(localId));
 
-            if (SupabaseClient.hasValidApiKey(context)) {
-                SupabaseClient.getApi(context).insertNutritionLog(item).enqueue(new Callback<List<NutritionItem>>() {
-                    @Override
-                    public void onResponse(Call<List<NutritionItem>> call, Response<List<NutritionItem>> response) {}
-                    @Override
-                    public void onFailure(Call<List<NutritionItem>> call, Throwable t) {}
-                });
-            }
+            SupabaseClient.getApi(context).insertNutritionLog(item).enqueue(new Callback<List<NutritionItem>>() {
+                @Override
+                public void onResponse(Call<List<NutritionItem>> call, Response<List<NutritionItem>> response) {}
+                @Override
+                public void onFailure(Call<List<NutritionItem>> call, Throwable t) {}
+            });
         });
     }
 
@@ -77,15 +70,12 @@ public class NutritionRepository {
             dbHelper.deleteNutrition(id);
             mainHandler.post(() -> callback.onSuccess(true));
 
-            if (SupabaseClient.hasValidApiKey(context)) {
-                SupabaseClient.getApi(context).deleteNutritionLog("eq." + id).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {}
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {}
-                });
-            }
+            SupabaseClient.getApi(context).deleteNutritionLog("eq." + id).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {}
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {}
+            });
         });
     }
 }
-

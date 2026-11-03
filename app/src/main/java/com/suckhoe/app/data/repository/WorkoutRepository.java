@@ -32,24 +32,22 @@ public class WorkoutRepository {
         this.dbHelper = AppDatabaseHelper.getInstance(this.context);
     }
 
-    public void getWorkoutsByDate(String date, DataCallback<List<WorkoutExercise>> callback) {
+    public void getWorkoutsByDate(long userId, String date, DataCallback<List<WorkoutExercise>> callback) {
         executor.execute(() -> {
-            List<WorkoutExercise> list = dbHelper.getWorkoutsByDate(date);
+            List<WorkoutExercise> list = dbHelper.getWorkoutsByDate(userId, date);
             mainHandler.post(() -> callback.onSuccess(list));
 
-            if (SupabaseClient.hasValidApiKey(context)) {
-                SupabaseClient.getApi(context).getWorkoutLogsByDate("eq." + date).enqueue(new Callback<List<WorkoutExercise>>() {
-                    @Override
-                    public void onResponse(Call<List<WorkoutExercise>> call, Response<List<WorkoutExercise>> response) {
-                        if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                            mainHandler.post(() -> callback.onSuccess(response.body()));
-                        }
+            SupabaseClient.getApi(context).getWorkoutLogsByDateAndUser("eq." + userId, "eq." + date).enqueue(new Callback<List<WorkoutExercise>>() {
+                @Override
+                public void onResponse(Call<List<WorkoutExercise>> call, Response<List<WorkoutExercise>> response) {
+                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        mainHandler.post(() -> callback.onSuccess(response.body()));
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<List<WorkoutExercise>> call, Throwable t) {}
-                });
-            }
+                @Override
+                public void onFailure(Call<List<WorkoutExercise>> call, Throwable t) {}
+            });
         });
     }
 
@@ -58,14 +56,12 @@ public class WorkoutRepository {
             long localId = dbHelper.insertWorkout(exercise);
             mainHandler.post(() -> callback.onSuccess(localId));
 
-            if (SupabaseClient.hasValidApiKey(context)) {
-                SupabaseClient.getApi(context).insertWorkoutLog(exercise).enqueue(new Callback<List<WorkoutExercise>>() {
-                    @Override
-                    public void onResponse(Call<List<WorkoutExercise>> call, Response<List<WorkoutExercise>> response) {}
-                    @Override
-                    public void onFailure(Call<List<WorkoutExercise>> call, Throwable t) {}
-                });
-            }
+            SupabaseClient.getApi(context).insertWorkoutLog(exercise).enqueue(new Callback<List<WorkoutExercise>>() {
+                @Override
+                public void onResponse(Call<List<WorkoutExercise>> call, Response<List<WorkoutExercise>> response) {}
+                @Override
+                public void onFailure(Call<List<WorkoutExercise>> call, Throwable t) {}
+            });
         });
     }
 
@@ -74,15 +70,12 @@ public class WorkoutRepository {
             dbHelper.deleteWorkout(id);
             mainHandler.post(() -> callback.onSuccess(true));
 
-            if (SupabaseClient.hasValidApiKey(context)) {
-                SupabaseClient.getApi(context).deleteWorkoutLog("eq." + id).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {}
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {}
-                });
-            }
+            SupabaseClient.getApi(context).deleteWorkoutLog("eq." + id).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {}
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {}
+            });
         });
     }
 }
-

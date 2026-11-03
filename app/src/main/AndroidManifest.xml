@@ -31,6 +31,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.LoginActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- BroadcastReceiver nhắc nhở uống nước -->
         <receiver
             android:name=".receiver.WaterReminderReceiver"

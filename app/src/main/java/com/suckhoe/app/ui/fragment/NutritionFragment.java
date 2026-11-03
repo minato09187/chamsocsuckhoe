@@ -114,8 +114,9 @@ public class NutritionFragment extends Fragment {
         tvGoalCal.setText(String.format(Locale.getDefault(), "Mục tiêu: %d kcal", goal));
         pbCalories.setMax(goal);
 
-        if (repository != null) {
-            repository.getNutritionByDate(today, new NutritionRepository.DataCallback<List<NutritionItem>>() {
+        if (repository != null && prefManager != null) {
+            long userId = prefManager.getCurrentUserId();
+            repository.getNutritionByDate(userId, today, new NutritionRepository.DataCallback<List<NutritionItem>>() {
                 @Override
                 public void onSuccess(List<NutritionItem> data) {
                     if (swipeRefresh.isRefreshing()) swipeRefresh.setRefreshing(false);

@@ -152,8 +152,9 @@ public class WeightWaterFragment extends Fragment {
 
     private void addWaterIntake(int amountMl) {
         String today = DateUtils.getTodayIsoDate();
+        long userId = prefManager != null ? prefManager.getCurrentUserId() : 1L;
         int goal = prefManager != null ? prefManager.getDailyWaterGoal() : 2000;
-        waterRepo.addWater(today, amountMl, goal, new WaterRepository.DataCallback<WaterLog>() {
+        waterRepo.addWater(userId, today, amountMl, goal, new WaterRepository.DataCallback<WaterLog>() {
             @Override
             public void onSuccess(WaterLog data) {
                 Toast.makeText(getContext(), "+" + amountMl + "ml nước đã được ghi nhận!", Toast.LENGTH_SHORT).show();
@@ -175,12 +176,13 @@ public class WeightWaterFragment extends Fragment {
 
     private void loadWaterData() {
         String today = DateUtils.getTodayIsoDate();
+        long userId = prefManager != null ? prefManager.getCurrentUserId() : 1L;
         int goal = prefManager != null ? prefManager.getDailyWaterGoal() : 2000;
         tvWaterTargetLabel.setText(String.format(Locale.getDefault(), "Mục tiêu: %d ml", goal));
         pbWater.setMax(goal);
 
         if (waterRepo != null) {
-            waterRepo.getWaterLog(today, new WaterRepository.DataCallback<WaterLog>() {
+            waterRepo.getWaterLog(userId, today, new WaterRepository.DataCallback<WaterLog>() {
                 @Override
                 public void onSuccess(WaterLog data) {
                     updateWaterDisplay(data);
@@ -203,8 +205,9 @@ public class WeightWaterFragment extends Fragment {
     }
 
     private void loadWeightData() {
-        if (weightRepo != null) {
-            weightRepo.getAllWeights(new WeightRepository.DataCallback<List<WeightRecord>>() {
+        if (weightRepo != null && prefManager != null) {
+            long userId = prefManager.getCurrentUserId();
+            weightRepo.getAllWeights(userId, new WeightRepository.DataCallback<List<WeightRecord>>() {
                 @Override
                 public void onSuccess(List<WeightRecord> data) {
                     weightAdapter.setItems(data);

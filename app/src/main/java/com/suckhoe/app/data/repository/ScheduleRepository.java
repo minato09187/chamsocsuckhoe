@@ -32,24 +32,22 @@ public class ScheduleRepository {
         this.dbHelper = AppDatabaseHelper.getInstance(this.context);
     }
 
-    public void getAllSchedules(DataCallback<List<WorkoutSchedule>> callback) {
+    public void getAllSchedules(long userId, DataCallback<List<WorkoutSchedule>> callback) {
         executor.execute(() -> {
-            List<WorkoutSchedule> list = dbHelper.getAllSchedules();
+            List<WorkoutSchedule> list = dbHelper.getAllSchedules(userId);
             mainHandler.post(() -> callback.onSuccess(list));
 
-            if (SupabaseClient.hasValidApiKey(context)) {
-                SupabaseClient.getApi(context).getWorkoutSchedules().enqueue(new Callback<List<WorkoutSchedule>>() {
-                    @Override
-                    public void onResponse(Call<List<WorkoutSchedule>> call, Response<List<WorkoutSchedule>> response) {
-                        if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                            mainHandler.post(() -> callback.onSuccess(response.body()));
-                        }
+            SupabaseClient.getApi(context).getWorkoutSchedulesByUser("eq." + userId).enqueue(new Callback<List<WorkoutSchedule>>() {
+                @Override
+                public void onResponse(Call<List<WorkoutSchedule>> call, Response<List<WorkoutSchedule>> response) {
+                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        mainHandler.post(() -> callback.onSuccess(response.body()));
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<List<WorkoutSchedule>> call, Throwable t) {}
-                });
-            }
+                @Override
+                public void onFailure(Call<List<WorkoutSchedule>> call, Throwable t) {}
+            });
         });
     }
 
@@ -58,14 +56,12 @@ public class ScheduleRepository {
             long localId = dbHelper.insertSchedule(schedule);
             mainHandler.post(() -> callback.onSuccess(localId));
 
-            if (SupabaseClient.hasValidApiKey(context)) {
-                SupabaseClient.getApi(context).insertWorkoutSchedule(schedule).enqueue(new Callback<List<WorkoutSchedule>>() {
-                    @Override
-                    public void onResponse(Call<List<WorkoutSchedule>> call, Response<List<WorkoutSchedule>> response) {}
-                    @Override
-                    public void onFailure(Call<List<WorkoutSchedule>> call, Throwable t) {}
-                });
-            }
+            SupabaseClient.getApi(context).insertWorkoutSchedule(schedule).enqueue(new Callback<List<WorkoutSchedule>>() {
+                @Override
+                public void onResponse(Call<List<WorkoutSchedule>> call, Response<List<WorkoutSchedule>> response) {}
+                @Override
+                public void onFailure(Call<List<WorkoutSchedule>> call, Throwable t) {}
+            });
         });
     }
 
@@ -74,16 +70,14 @@ public class ScheduleRepository {
             dbHelper.updateScheduleCompleted(id, isCompleted);
             mainHandler.post(() -> callback.onSuccess(true));
 
-            if (SupabaseClient.hasValidApiKey(context)) {
-                WorkoutSchedule updateObj = new WorkoutSchedule();
-                updateObj.setCompleted(isCompleted);
-                SupabaseClient.getApi(context).updateWorkoutSchedule("eq." + id, updateObj).enqueue(new Callback<List<WorkoutSchedule>>() {
-                    @Override
-                    public void onResponse(Call<List<WorkoutSchedule>> call, Response<List<WorkoutSchedule>> response) {}
-                    @Override
-                    public void onFailure(Call<List<WorkoutSchedule>> call, Throwable t) {}
-                });
-            }
+            WorkoutSchedule updateObj = new WorkoutSchedule();
+            updateObj.setCompleted(isCompleted);
+            SupabaseClient.getApi(context).updateWorkoutSchedule("eq." + id, updateObj).enqueue(new Callback<List<WorkoutSchedule>>() {
+                @Override
+                public void onResponse(Call<List<WorkoutSchedule>> call, Response<List<WorkoutSchedule>> response) {}
+                @Override
+                public void onFailure(Call<List<WorkoutSchedule>> call, Throwable t) {}
+            });
         });
     }
 
@@ -92,15 +86,12 @@ public class ScheduleRepository {
             dbHelper.deleteSchedule(id);
             mainHandler.post(() -> callback.onSuccess(true));
 
-            if (SupabaseClient.hasValidApiKey(context)) {
-                SupabaseClient.getApi(context).deleteWorkoutSchedule("eq." + id).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {}
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {}
-                });
-            }
+            SupabaseClient.getApi(context).deleteWorkoutSchedule("eq." + id).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {}
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {}
+            });
         });
     }
 }
-

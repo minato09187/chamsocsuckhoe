@@ -6,4 +6,9 @@
         android:icon="@drawable/ic_cloud_sync"
         android:title="@string/sync"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_user_profile"
+        android:icon="@drawable/ic_user"
+        android:title="Tài khoản"
+        app:showAsAction="ifRoom" />
 </menu>

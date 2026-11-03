@@ -32,24 +32,22 @@ public class WeightRepository {
         this.dbHelper = AppDatabaseHelper.getInstance(this.context);
     }
 
-    public void getAllWeights(DataCallback<List<WeightRecord>> callback) {
+    public void getAllWeights(long userId, DataCallback<List<WeightRecord>> callback) {
         executor.execute(() -> {
-            List<WeightRecord> list = dbHelper.getAllWeights();
+            List<WeightRecord> list = dbHelper.getAllWeights(userId);
             mainHandler.post(() -> callback.onSuccess(list));
 
-            if (SupabaseClient.hasValidApiKey(context)) {
-                SupabaseClient.getApi(context).getWeightLogs().enqueue(new Callback<List<WeightRecord>>() {
-                    @Override
-                    public void onResponse(Call<List<WeightRecord>> call, Response<List<WeightRecord>> response) {
-                        if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                            mainHandler.post(() -> callback.onSuccess(response.body()));
-                        }
+            SupabaseClient.getApi(context).getWeightLogsByUser("eq." + userId).enqueue(new Callback<List<WeightRecord>>() {
+                @Override
+                public void onResponse(Call<List<WeightRecord>> call, Response<List<WeightRecord>> response) {
+                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        mainHandler.post(() -> callback.onSuccess(response.body()));
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<List<WeightRecord>> call, Throwable t) {}
-                });
-            }
+                @Override
+                public void onFailure(Call<List<WeightRecord>> call, Throwable t) {}
+            });
         });
     }
 
@@ -58,14 +56,12 @@ public class WeightRepository {
             long localId = dbHelper.insertWeight(record);
             mainHandler.post(() -> callback.onSuccess(localId));
 
-            if (SupabaseClient.hasValidApiKey(context)) {
-                SupabaseClient.getApi(context).insertWeightLog(record).enqueue(new Callback<List<WeightRecord>>() {
-                    @Override
-                    public void onResponse(Call<List<WeightRecord>> call, Response<List<WeightRecord>> response) {}
-                    @Override
-                    public void onFailure(Call<List<WeightRecord>> call, Throwable t) {}
-                });
-            }
+            SupabaseClient.getApi(context).insertWeightLog(record).enqueue(new Callback<List<WeightRecord>>() {
+                @Override
+                public void onResponse(Call<List<WeightRecord>> call, Response<List<WeightRecord>> response) {}
+                @Override
+                public void onFailure(Call<List<WeightRecord>> call, Throwable t) {}
+            });
         });
     }
 
@@ -74,15 +70,12 @@ public class WeightRepository {
             dbHelper.deleteWeight(id);
             mainHandler.post(() -> callback.onSuccess(true));
 
-            if (SupabaseClient.hasValidApiKey(context)) {
-                SupabaseClient.getApi(context).deleteWeightLog("eq." + id).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {}
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {}
-                });
-            }
+            SupabaseClient.getApi(context).deleteWeightLog("eq." + id).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {}
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {}
+            });
         });
     }
 }
-

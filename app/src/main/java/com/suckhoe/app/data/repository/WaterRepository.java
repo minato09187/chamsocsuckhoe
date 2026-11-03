@@ -32,34 +32,32 @@ public class WaterRepository {
         this.dbHelper = AppDatabaseHelper.getInstance(this.context);
     }
 
-    public void getWaterLog(String date, DataCallback<WaterLog> callback) {
+    public void getWaterLog(long userId, String date, DataCallback<WaterLog> callback) {
         executor.execute(() -> {
-            WaterLog log = dbHelper.getWaterLog(date);
+            WaterLog log = dbHelper.getWaterLog(userId, date);
             mainHandler.post(() -> callback.onSuccess(log));
 
-            if (SupabaseClient.hasValidApiKey(context)) {
-                SupabaseClient.getApi(context).getWaterLogByDate("eq." + date).enqueue(new Callback<List<WaterLog>>() {
-                    @Override
-                    public void onResponse(Call<List<WaterLog>> call, Response<List<WaterLog>> response) {
-                        if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                            mainHandler.post(() -> callback.onSuccess(response.body().get(0)));
-                        }
+            SupabaseClient.getApi(context).getWaterLogByDateAndUser("eq." + userId, "eq." + date).enqueue(new Callback<List<WaterLog>>() {
+                @Override
+                public void onResponse(Call<List<WaterLog>> call, Response<List<WaterLog>> response) {
+                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        mainHandler.post(() -> callback.onSuccess(response.body().get(0)));
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<List<WaterLog>> call, Throwable t) {}
-                });
-            }
+                @Override
+                public void onFailure(Call<List<WaterLog>> call, Throwable t) {}
+            });
         });
     }
 
-    public void addWater(String date, int amountMl, int targetMl, DataCallback<WaterLog> callback) {
+    public void addWater(long userId, String date, int amountMl, int targetMl, DataCallback<WaterLog> callback) {
         executor.execute(() -> {
-            dbHelper.updateWaterLog(date, amountMl, targetMl);
-            WaterLog updated = dbHelper.getWaterLog(date);
+            dbHelper.updateWaterLog(userId, date, amountMl, targetMl);
+            WaterLog updated = dbHelper.getWaterLog(userId, date);
             mainHandler.post(() -> callback.onSuccess(updated));
 
-            if (SupabaseClient.hasValidApiKey(context) && updated != null) {
+            if (updated != null) {
                 SupabaseClient.getApi(context).insertWaterLog(updated).enqueue(new Callback<List<WaterLog>>() {
                     @Override
                     public void onResponse(Call<List<WaterLog>> call, Response<List<WaterLog>> response) {}
@@ -70,4 +68,3 @@ public class WaterRepository {
         });
     }
 }
-

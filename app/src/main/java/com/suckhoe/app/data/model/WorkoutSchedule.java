@@ -6,6 +6,9 @@ public class WorkoutSchedule {
     @SerializedName("id")
     private Long id;
 
+    @SerializedName("user_id")
+    private Long userId;
+
     @SerializedName("day_of_week")
     private String dayOfWeek; // Thứ 2, Thứ 3, ..., Chủ Nhật
 
@@ -29,7 +32,8 @@ public class WorkoutSchedule {
 
     public WorkoutSchedule() {}
 
-    public WorkoutSchedule(String dayOfWeek, String title, String targetMuscle, String timeOfDay, boolean isCompleted, String notes) {
+    public WorkoutSchedule(Long userId, String dayOfWeek, String title, String targetMuscle, String timeOfDay, boolean isCompleted, String notes) {
+        this.userId = userId;
         this.dayOfWeek = dayOfWeek;
         this.title = title;
         this.targetMuscle = targetMuscle;
@@ -40,6 +44,9 @@ public class WorkoutSchedule {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
     public String getDayOfWeek() { return dayOfWeek; }
     public void setDayOfWeek(String dayOfWeek) { this.dayOfWeek = dayOfWeek; }
@@ -62,4 +69,3 @@ public class WorkoutSchedule {
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }
-

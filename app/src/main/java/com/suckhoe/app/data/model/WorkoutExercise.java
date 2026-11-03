@@ -6,6 +6,9 @@ public class WorkoutExercise {
     @SerializedName("id")
     private Long id;
 
+    @SerializedName("user_id")
+    private Long userId;
+
     @SerializedName("exercise_name")
     private String exerciseName;
 
@@ -35,7 +38,8 @@ public class WorkoutExercise {
 
     public WorkoutExercise() {}
 
-    public WorkoutExercise(String exerciseName, String muscleGroup, int sets, int reps, double weight, int durationMinutes, int caloriesBurned, String logDate) {
+    public WorkoutExercise(Long userId, String exerciseName, String muscleGroup, int sets, int reps, double weight, int durationMinutes, int caloriesBurned, String logDate) {
+        this.userId = userId;
         this.exerciseName = exerciseName;
         this.muscleGroup = muscleGroup;
         this.sets = sets;
@@ -48,6 +52,9 @@ public class WorkoutExercise {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
     public String getExerciseName() { return exerciseName; }
     public void setExerciseName(String exerciseName) { this.exerciseName = exerciseName; }
@@ -76,4 +83,3 @@ public class WorkoutExercise {
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }
-

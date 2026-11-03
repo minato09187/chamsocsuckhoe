@@ -31,6 +31,7 @@ public class ScheduleFragment extends Fragment {
 
     private ScheduleRepository repository;
     private ScheduleAdapter adapter;
+    private com.suckhoe.app.util.PreferenceManager prefManager;
 
     @Nullable
     @Override
@@ -50,6 +51,7 @@ public class ScheduleFragment extends Fragment {
 
         if (getContext() != null) {
             repository = new ScheduleRepository(getContext());
+            prefManager = new com.suckhoe.app.util.PreferenceManager(getContext());
         }
 
         rvSchedule.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -108,8 +110,9 @@ public class ScheduleFragment extends Fragment {
     }
 
     private void loadSchedules() {
-        if (repository != null) {
-            repository.getAllSchedules(new ScheduleRepository.DataCallback<List<WorkoutSchedule>>() {
+        if (repository != null && prefManager != null) {
+            long userId = prefManager.getCurrentUserId();
+            repository.getAllSchedules(userId, new ScheduleRepository.DataCallback<List<WorkoutSchedule>>() {
                 @Override
                 public void onSuccess(List<WorkoutSchedule> data) {
                     if (swipeRefresh.isRefreshing()) swipeRefresh.setRefreshing(false);

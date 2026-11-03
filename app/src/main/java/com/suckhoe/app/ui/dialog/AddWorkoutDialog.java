@@ -92,7 +92,8 @@ public class AddWorkoutDialog extends Dialog {
             } catch (Exception ignored) {}
 
             String muscle = spinnerMuscle.getSelectedItem().toString();
-            WorkoutExercise exercise = new WorkoutExercise(name, muscle, sets, reps, weight, duration, calories, DateUtils.getTodayIsoDate());
+            long userId = new com.suckhoe.app.util.PreferenceManager(getContext()).getCurrentUserId();
+            WorkoutExercise exercise = new WorkoutExercise(userId, name, muscle, sets, reps, weight, duration, calories, DateUtils.getTodayIsoDate());
 
             if (listener != null) {
                 listener.onWorkoutAdded(exercise);

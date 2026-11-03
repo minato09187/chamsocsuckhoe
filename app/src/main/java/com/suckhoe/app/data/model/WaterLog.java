@@ -6,6 +6,9 @@ public class WaterLog {
     @SerializedName("id")
     private Long id;
 
+    @SerializedName("user_id")
+    private Long userId;
+
     @SerializedName("amount_ml")
     private int amountMl;
 
@@ -20,7 +23,8 @@ public class WaterLog {
 
     public WaterLog() {}
 
-    public WaterLog(int amountMl, int targetMl, String logDate) {
+    public WaterLog(Long userId, int amountMl, int targetMl, String logDate) {
+        this.userId = userId;
         this.amountMl = amountMl;
         this.targetMl = targetMl;
         this.logDate = logDate;
@@ -28,6 +32,9 @@ public class WaterLog {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
     public int getAmountMl() { return amountMl; }
     public void setAmountMl(int amountMl) { this.amountMl = amountMl; }
@@ -41,4 +48,3 @@ public class WaterLog {
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }
-

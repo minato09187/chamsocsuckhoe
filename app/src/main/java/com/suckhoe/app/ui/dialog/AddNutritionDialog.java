@@ -98,7 +98,8 @@ public class AddNutritionDialog extends Dialog {
             } catch (Exception ignored) {}
 
             String mealType = spinnerMealType.getSelectedItem().toString();
-            NutritionItem item = new NutritionItem(name, calories, protein, carbs, fat, mealType, DateUtils.getTodayIsoDate());
+            long userId = new com.suckhoe.app.util.PreferenceManager(getContext()).getCurrentUserId();
+            NutritionItem item = new NutritionItem(userId, name, calories, protein, carbs, fat, mealType, DateUtils.getTodayIsoDate());
 
             if (listener != null) {
                 listener.onNutritionAdded(item);

@@ -97,7 +97,8 @@ public class AddWeightDialog extends Dialog {
             double bmi = WeightRecord.calculateBmi(weight, height);
             String note = etNote.getText() != null ? etNote.getText().toString().trim() : "";
 
-            WeightRecord record = new WeightRecord(weight, height, bmi, note, DateUtils.getTodayIsoDate());
+            long userId = preferenceManager.getCurrentUserId();
+            WeightRecord record = new WeightRecord(userId, weight, height, bmi, note, DateUtils.getTodayIsoDate());
 
             if (listener != null) {
                 listener.onWeightAdded(record);

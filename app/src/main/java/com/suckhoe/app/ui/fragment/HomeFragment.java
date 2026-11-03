@@ -37,6 +37,7 @@ import java.util.Locale;
 
 public class HomeFragment extends Fragment {
     private SwipeRefreshLayout swipeRefresh;
+    private TextView tvGreeting;
     private TextView tvTodayDate;
     private ImageView btnRestTimerHeader;
 
@@ -83,6 +84,7 @@ public class HomeFragment extends Fragment {
 
     private void initViews(View view) {
         swipeRefresh = view.findViewById(R.id.swipe_refresh_home);
+        tvGreeting = view.findViewById(R.id.tv_greeting);
         tvTodayDate = view.findViewById(R.id.tv_today_date);
         btnRestTimerHeader = view.findViewById(R.id.btn_home_rest_timer);
 
@@ -150,8 +152,9 @@ public class HomeFragment extends Fragment {
 
         btnQuickWater.setOnClickListener(v -> {
             String today = DateUtils.getTodayIsoDate();
+            long userId = prefManager.getCurrentUserId();
             int goal = prefManager.getDailyWaterGoal();
-            waterRepo.addWater(today, 250, goal, new WaterRepository.DataCallback<WaterLog>() {
+            waterRepo.addWater(userId, today, 250, goal, new WaterRepository.DataCallback<WaterLog>() {
                 @Override
                 public void onSuccess(WaterLog data) {
                     Toast.makeText(getContext(), "+250ml nước đã uống!", Toast.LENGTH_SHORT).show();
@@ -165,6 +168,9 @@ public class HomeFragment extends Fragment {
     }
 
     public void loadAllData() {
+        if (tvGreeting != null && prefManager != null) {
+            tvGreeting.setText("Xin chào, " + prefManager.getCurrentUserFullName() + "!");
+        }
         loadNutritionData();
         loadWaterData();
         loadWeightData();
@@ -176,11 +182,12 @@ public class HomeFragment extends Fragment {
 
     private void loadNutritionData() {
         String today = DateUtils.getTodayIsoDate();
+        long userId = prefManager.getCurrentUserId();
         int goal = prefManager.getDailyCalorieGoal();
         tvCalorieGoal.setText(String.format(Locale.getDefault(), "Mục tiêu: %d kcal", goal));
         pbCalories.setMax(goal);
 
-        nutritionRepo.getNutritionByDate(today, new NutritionRepository.DataCallback<List<NutritionItem>>() {
+        nutritionRepo.getNutritionByDate(userId, today, new NutritionRepository.DataCallback<List<NutritionItem>>() {
             @Override
             public void onSuccess(List<NutritionItem> data) {
                 int consumed = 0;
@@ -200,11 +207,12 @@ public class HomeFragment extends Fragment {
 
     private void loadWaterData() {
         String today = DateUtils.getTodayIsoDate();
+        long userId = prefManager.getCurrentUserId();
         int goal = prefManager.getDailyWaterGoal();
         tvWaterTarget.setText(String.format(Locale.getDefault(), "Mục tiêu: %d ml", goal));
         pbWater.setMax(goal);
 
-        waterRepo.getWaterLog(today, new WaterRepository.DataCallback<WaterLog>() {
+        waterRepo.getWaterLog(userId, today, new WaterRepository.DataCallback<WaterLog>() {
             @Override
             public void onSuccess(WaterLog data) {
                 updateWaterView(data);
@@ -223,7 +231,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadWeightData() {
-        weightRepo.getAllWeights(new WeightRepository.DataCallback<List<WeightRecord>>() {
+        long userId = prefManager.getCurrentUserId();
+        weightRepo.getAllWeights(userId, new WeightRepository.DataCallback<List<WeightRecord>>() {
             @Override
             public void onSuccess(List<WeightRecord> data) {
                 if (data != null && !data.isEmpty()) {
@@ -240,7 +249,8 @@ public class HomeFragment extends Fragment {
 
     private void loadWorkoutData() {
         String today = DateUtils.getTodayIsoDate();
-        workoutRepo.getWorkoutsByDate(today, new WorkoutRepository.DataCallback<List<WorkoutExercise>>() {
+        long userId = prefManager.getCurrentUserId();
+        workoutRepo.getWorkoutsByDate(userId, today, new WorkoutRepository.DataCallback<List<WorkoutExercise>>() {
             @Override
             public void onSuccess(List<WorkoutExercise> data) {
                 int count = data != null ? data.size() : 0;

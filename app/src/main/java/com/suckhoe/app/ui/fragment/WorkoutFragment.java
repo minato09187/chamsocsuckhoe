@@ -39,6 +39,7 @@ public class WorkoutFragment extends Fragment {
 
     private WorkoutRepository repository;
     private WorkoutAdapter adapter;
+    private com.suckhoe.app.util.PreferenceManager prefManager;
 
     @Nullable
     @Override
@@ -62,6 +63,7 @@ public class WorkoutFragment extends Fragment {
 
         if (getContext() != null) {
             repository = new WorkoutRepository(getContext());
+            prefManager = new com.suckhoe.app.util.PreferenceManager(getContext());
         }
 
         rvWorkout.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -112,8 +114,9 @@ public class WorkoutFragment extends Fragment {
 
     private void loadWorkouts() {
         String today = DateUtils.getTodayIsoDate();
-        if (repository != null) {
-            repository.getWorkoutsByDate(today, new WorkoutRepository.DataCallback<List<WorkoutExercise>>() {
+        if (repository != null && prefManager != null) {
+            long userId = prefManager.getCurrentUserId();
+            repository.getWorkoutsByDate(userId, today, new WorkoutRepository.DataCallback<List<WorkoutExercise>>() {
                 @Override
                 public void onSuccess(List<WorkoutExercise> data) {
                     if (swipeRefresh.isRefreshing()) swipeRefresh.setRefreshing(false);
